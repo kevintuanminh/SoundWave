@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoundWave - Trải Nghiệm Âm Nhạc</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="js/data.js"></script>
+</head>
+
+<body>
+
+  <!-- MAIN APP -->
+  <div class="app active" id="appPage">
+    <!-- YouTube Player ẩn - để phát nhạc -->
+    <!-- YouTube Player dạng iframe -->
+    <!-- <iframe id="youtubePlayer" width="0" height="0" src="https://www.youtube.com/embed/knW7-x7Y7RE?enablejsapi=1&autoplay=0" style="display: none; visibility: hidden;" allow="autoplay"></iframe> -->
+    <!-- SoundCloud Player ẩn -->
+    <div id="soundcloudPlayer" style="display: none;"></div>
+    <!-- TOPBAR MỚI -->
+    <div class="topbar">
+      <div class="topbar-logo">
+        <div class="topbar-logo-icon">🎵</div>
+        <span>SoundWave</span>
+      </div>
+
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Tìm bài hát, nghệ sĩ, album...">
+      </div>
+
+      <div class="topbar-right">
+        <!-- <div class="notif-btn">🔔<div class="notif-dot"></div></div> -->
+
+        <!-- Phần user - thay đổi theo trạng thái đăng nhập -->
+        <div id="userSection"></div>
+      </div>
+    </div>
+
+    <div class="main-layout">
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-label">Menu</div>
+          <div class="nav-item active" data-tab="home"><span class="nav-icon">🏠</span> Trang chủ</div>
+          <div class="nav-item" data-tab="trending"><span class="nav-icon">🔥</span> Thịnh hành</div>
+          <div class="nav-item" data-tab="favorites"><span class="nav-icon">❤️</span> Yêu thích</div>
+          <div class="nav-item" data-tab="artists"><span class="nav-icon">🎤</span> Nghệ sĩ</div>
+          <div class="nav-item" data-tab="profile"><span class="nav-icon">👤</span> Hồ sơ</div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">Thể loại</div>
+          <div id="genreTags">
+            <span class="genre-tag active" data-genre="pop">Pop</span>
+            <span class="genre-tag" data-genre="chill">Chill</span>
+            <span class="genre-tag" data-genre="vpop">V-Pop</span>
+            <span class="genre-tag" data-genre="rock">Rock</span>
+            <span class="genre-tag" data-genre="edm">EDM</span>
+            <span class="genre-tag" data-genre="ballad">Ballad</span>
+            <span class="genre-tag" data-genre="hiphop">Hip-hop</span>
+            <span class="genre-tag" data-genre="jazz">Jazz</span>
+            <span class="genre-tag-more" id="moreGenreBtn" title="Xem thêm thể loại">+</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">Playlist của tôi</div>
+          <div id="myPlaylists">
+
+          </div>
+          <div class="nav-item" id="createPlaylistBtn"><span class="nav-icon">＋</span> Tạo playlist mới</div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <!-- MAIN CONTENT -->
+      <div class="content" id="mainContent">
+        <!-- Nội dung sẽ được tải từ file pages/ khi nhấn menu -->
+        <div class="loading">Đang tải...</div>
+      </div>
+      <!-- <div class="content"> -->
+
+      <!-- RIGHT PANEL - NOW PLAYING -->
+      <div class="right-panel">
+        <div class="now-playing-header">
+          <span class="np-title">Đang phát</span>
+          <!-- <span class="queue-btn">Hàng chờ</span> -->
+        </div>
+        <div class="now-playing-art">
+          <div class="np-cover" id="npCover">🎵</div>
+        </div>
+        <div class="np-song-info">
+          <div class="np-song-name" id="npSongName">Chưa chọn bài hát</div>
+          <div class="np-song-artist" id="npArtist">SoundWave</div>
+          <div class="np-actions">
+            <button class="np-action-btn" id="likeCurrentBtn" title="Yêu thích (L)">🤍</button>
+            <button class="np-action-btn" id="addToPlaylistNpBtn" title="Thêm vào playlist">➕</button>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-bar-wrap" id="progressBar">
+            <div class="progress-fill" id="progressFill">
+              <div class="progress-thumb"></div>
+            </div>
+          </div>
+          <div class="progress-times"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+        </div>
+
+        <div class="controls">
+          <button class="ctrl-btn" id="shuffleCtrlBtn">🔀</button>
+          <button class="ctrl-btn" id="prevBtn">⏮</button>
+          <button class="play-btn" id="playPauseBtn">⏸</button>
+          <button class="ctrl-btn" id="nextBtn">⏭</button>
+          <button class="ctrl-btn" id="repeatCtrlBtn">🔁</button>
+        </div>
+
+        <div class="volume-row">
+          <span class="vol-icon">🔈</span>
+          <div class="vol-bar" id="volumeBar">
+            <div class="vol-fill" id="volumeFill"></div>
+          </div>
+          <span class="vol-icon">🔊</span>
+        </div>
+
+        <div class="queue-section">
+          <div class="queue-label">Tiếp theo</div>
+          <div id="queueList"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM PLAYER (mobile) -->
+    <div class="bottom-player" id="bottomPlayer">
+      <div class="bp-track">
+        <div class="bp-thumb" id="bpThumb">🎵</div>
+        <div class="bp-info">
+          <div class="bp-name" id="bpName">Chưa có bài hát</div>
+          <div class="bp-artist" id="bpArtist">Mời bạn chọn bài</div>
+        </div>
+      </div>
+      <div class="bp-controls">
+        <button class="bp-btn" id="bpPrevBtn">⏮</button>
+        <button class="bp-play" id="bpPlayPauseBtn">⏸</button>
+        <button class="bp-btn" id="bpNextBtn">⏭</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal chọn playlist -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+  <div class="playlist-manager" id="playlistManager">
+    <div class="playlist-manager-header">
+      <h3>➕ Thêm vào playlist</h3>
+      <span class="playlist-manager-close" id="closePlaylistManager">&times;</span>
+    </div>
+    <div class="playlist-manager-body" id="playlistListContainer">
+      <!-- Danh sách playlist sẽ hiển thị ở đây -->
+    </div>
+    <div style="padding: 0 1rem 1rem 1rem;">
+      <button class="create-new-playlist-btn" id="createNewPlaylistFromModal">+ Tạo playlist mới</button>
+    </div>
+  </div>
+
+  <!-- Modal tạo playlist mới -->
+  <div class="create-playlist-modal" id="createPlaylistModal">
+    <div class="modal-header">
+      <h3>Tạo playlist mới</h3>
+      <span class="playlist-manager-close" id="closeCreateModal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="newPlaylistName" placeholder="Tên playlist...">
+      <button class="btn-create" id="confirmCreatePlaylist">Tạo</button>
+    </div>
+  </div>
+
+  <!-- Modal hiển thị tất cả thể loại -->
+  <div class="genre-modal" id="genreModal">
+    <div class="modal-header">
+      <h3> 🎵 Khám phá thể loại </h3>
+      <span class="playlist-manager-close" id="closeGenreModal">&times;</span>
+    </div>
+    <div class="genre-modal-grid" id="fullGenreList">
+      <!-- Tất cả thể loại sẽ được liệt kê ở đây -->
+    </div>
+  </div>
+
+  <script src="js/ui.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/playlist.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

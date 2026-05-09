@@ -1,0 +1,180 @@
+<div>
+  <!-- HERO BANNER -->
+  <div class="hero-banner" id="heroBanner">
+    <div class="hero-text">
+      <div class="hero-tag">🎵 Dành cho bạn</div>
+      <h2 id="heroTitle">Top V-Pop Tuần Này</h2>
+      <p id="heroDesc">Những bài hát được nghe nhiều nhất tuần này trên SoundWave</p>
+      <div class="hero-btns">
+        <button class="btn-primary" id="heroPlayBtn">▶ Phát ngay</button>
+        <button class="btn-ghost" id="heroShuffleBtn">🔀 Shuffle</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-album-stack">
+        <div class="ha" style="background:linear-gradient(135deg,#1a0a3e,#2a1a5e);left:40px;top:0;transform:rotate(8deg)">🎤</div>
+        <div class="ha" style="background:linear-gradient(135deg,#0a1a2e,#1a2a4e);left:15px;top:12px;transform:rotate(-3deg)">🎵</div>
+        <div class="ha" style="background:linear-gradient(135deg,#0a2e1a,#1a4e2a);left:0;top:22px;transform:rotate(-12deg)">🎸</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP SONGS -->
+  <div class="top-songs">
+    <div class="section-header">
+      <div class="section-title" id="topSongsTitle">🔥 Top nghe nhiều nhất</div>
+      <a href="#" class="see-all" id="seeAllBtn">Xem tất cả →</a>
+    </div>
+    <div id="topSongsList"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-list">
+    <div class="section-header">
+      <div class="section-title">🕑 Nghe gần đây</div>
+      <a href="#" class="see-all" id="clearHistoryBtn">Xóa lịch sử</a>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- ALBUMS -->
+  <div style="margin-bottom:2rem">
+    <div class="section-header"><div class="section-title">💿 Album nổi bật</div></div>
+    <div class="album-grid" id="albumGrid"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const songs = window.SONGS_DATA || [];
+  const albums = window.ALBUMS_DATA || [];
+  const genre = window._genreFilter || 'all';
+
+  // Filter theo genre
+  const filtered = genre === 'all' ? songs : songs.filter(s => s.genre === genre);
+  const sorted = [...filtered].sort((a, b) => (a.rank || 99) - (b.rank || 99));
+  const topSongs = sorted;
+
+  // Cập nhật title theo thể loại
+  const genreNames = {
+    'all': 'nghe nhiều nhất',
+    'pop': 'Pop',
+    'chill': 'Chill',
+    'vpop': 'V-Pop',
+    'rock': 'Rock',
+    'edm': 'EDM',
+    'ballad': 'Ballad',
+    'hiphop': 'Hip-hop',
+    'jazz': 'Jazz'
+  };
+  const titleEl = document.getElementById('topSongsTitle');
+  if (titleEl) {
+    const gName = genreNames[genre] || (genre.charAt(0).toUpperCase() + genre.slice(1));
+    titleEl.innerHTML = `🔥 Top ${gName}`;
+  }
+
+  // Hero buttons
+  const heroPlayBtn = document.getElementById('heroPlayBtn');
+  const heroShuffleBtn = document.getElementById('heroShuffleBtn');
+  if (heroPlayBtn && topSongs.length > 0) {
+    heroPlayBtn.addEventListener('click', () => {
+      if (window.playSongFromMain) window.playSongFromMain(topSongs[0]);
+    });
+  }
+  if (heroShuffleBtn && topSongs.length > 0) {
+    heroShuffleBtn.addEventListener('click', () => {
+      const r = topSongs[Math.floor(Math.random() * topSongs.length)];
+      if (window.playSongFromMain) window.playSongFromMain(r);
+    });
+  }
+
+  // Top Songs
+  function buildTopSongs() {
+    const el = document.getElementById('topSongsList');
+    if (!el) return;
+    if (topSongs.length === 0) {
+      el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text2)">Không có bài hát nào trong thể loại này</div>';
+      return;
+    }
+    el.innerHTML = topSongs.map((s,i) => {
+      const thumbContent = s.image 
+        ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+        : s.emoji;
+      return `
+      <div class="song-item" data-song='${JSON.stringify(s)}'>
+        <div class="song-rank${i<3?' top':''}">${i + 1}</div>
+        <div class="song-thumb" style="background:${s.bg}">${thumbContent}<div class="song-play-overlay">▶</div></div>
+        <div class="song-info"><div class="song-name">${s.name}</div><div class="song-artist">${s.artist}</div></div>
+        <div class="song-meta">
+          <span class="add-to-playlist-btn" data-song='${JSON.stringify(s)}' style="cursor:pointer;margin:0 8px">➕</span>
+          <span class="like-song-btn ${window.isLiked && window.isLiked(s)?'liked':''}" data-song='${JSON.stringify(s)}' style="cursor:pointer;margin:0 4px">${window.isLiked && window.isLiked(s)?'❤️':'🤍'}</span>
+        </div>
+      </div>`;
+    }).join('');
+    el.querySelectorAll('.song-item').forEach(item => {
+      item.addEventListener('click', e => {
+        if (e.target.classList.contains('add-to-playlist-btn') || e.target.classList.contains('like-song-btn')) return;
+        if (window.playSongFromMain) window.playSongFromMain(JSON.parse(item.dataset.song));
+      });
+    });
+    el.querySelectorAll('.add-to-playlist-btn').forEach(btn => {
+      btn.addEventListener('click', e => { e.stopPropagation(); if (window.showAddToPlaylistModal) window.showAddToPlaylistModal(JSON.parse(btn.dataset.song)); });
+    });
+    el.querySelectorAll('.like-song-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const s = JSON.parse(btn.dataset.song);
+        if (window.toggleLike) { window.toggleLike(s); btn.textContent = window.isLiked(s)?'❤️':'🤍'; btn.classList.toggle('liked'); }
+      });
+    });
+  }
+
+  // History
+  function buildHistory() {
+    const el = document.getElementById('historyList');
+    if (!el) return;
+    const hist = JSON.parse(localStorage.getItem('listenHistory')) || [];
+    if (hist.length === 0) {
+      el.innerHTML = '<div class="history-item" style="justify-content:center;color:var(--text3)">Chưa có bài hát nào</div>';
+      return;
+    }
+    const timeAgo = t => { const d=(Date.now()-t)/1000; if(d<60)return'Vừa xong'; if(d<3600)return Math.floor(d/60)+' phút trước'; if(d<86400)return Math.floor(d/3600)+' giờ trước'; return Math.floor(d/86400)+' ngày trước'; };
+    el.innerHTML = hist.slice(0,8).map(h => `
+      <div class="history-item" data-song='${JSON.stringify(h)}'>
+        <span class="history-time">${timeAgo(h.time)}</span>
+        <div class="history-thumb" style="background:${h.bg||'#1a0a2e'}">${h.emoji||'🎵'}</div>
+        <div class="history-info"><div class="history-name">${h.name}</div><div class="history-artist">${h.artist}</div></div>
+      </div>`).join('');
+    el.querySelectorAll('.history-item').forEach(item => {
+      item.addEventListener('click', () => { if (window.playSongFromMain) window.playSongFromMain(JSON.parse(item.dataset.song)); });
+    });
+  }
+
+  // Albums
+  function buildAlbums() {
+    const el = document.getElementById('albumGrid');
+    if (!el) return;
+    el.innerHTML = albums.map(a => `
+      <div class="album-card">
+        <div class="album-cover" style="background:${a.bg}">${a.emoji}
+          <div class="album-cover-overlay"><div class="album-play-btn">▶</div></div>
+        </div>
+        <div class="album-name">${a.name}</div>
+        <div class="album-artist">${a.artist}</div>
+      </div>`).join('');
+  }
+
+  buildTopSongs();
+  buildHistory();
+  buildAlbums();
+
+  document.getElementById('clearHistoryBtn')?.addEventListener('click', e => {
+    e.preventDefault();
+    if (confirm('Xóa toàn bộ lịch sử?')) { localStorage.removeItem('listenHistory'); buildHistory(); }
+  });
+  document.getElementById('seeAllBtn')?.addEventListener('click', e => {
+    e.preventDefault();
+    if (window.loadContent) window.loadContent('trending');
+  });
+})();
+</script>
