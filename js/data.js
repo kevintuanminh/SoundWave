@@ -25,13 +25,10 @@ window.SONGS_DATA = [
   // --- CHILL ---
   { id:9,  rank:9,  name:"Bài Này Chill Phết",           artist:"Đen Vâu, MIN",            plays:"3.9M", duration:210, dur:"3:30", bg:"linear-gradient(135deg,#0a2e1a,#1a4e2a)", genre:"chill",  soundCloudUrl:"https://soundcloud.com/den1305/bai-nay-chill-phet", image: "" },
   { id:10, rank:10, name:"Chuyện Đôi Ta",                artist:"Emcee L, Muộii",          plays:"3.7M", duration:210, dur:"3:30", bg:"linear-gradient(135deg,#1a0a2e,#2e1a4e)", genre:"chill",  soundCloudUrl:"https://soundcloud.com/minh-ph-789763242/chuyen-doi-ta-emcee-l-ft-muoii-lofi-ver", image: "" },
-
   // --- BALLAD ---
   // --- ROCK ---
   // --- BALLAD ---
-
   // --- HIP-HOP ---
-
   // --- EDM ---
   { id:21, rank:21, name:"Fly Away",                   artist:"TheFatRat",             plays:"1.7M", duration:210, dur:"3:30", bg:"linear-gradient(135deg,#0a0a0a,#1a1a1a)", genre:"edm", soundCloudUrl:"https://soundcloud.com/thefatrat/thefatrat-fly-away-feat-anjulie", image: "" },
   // --- JAZZ ---
@@ -41,7 +38,6 @@ window.SONGS_DATA = [
   // --- RAP ---
   // --- J-POP ---
   // --- K-POP ---
-  
 ];
 
 window.ARTISTS_DATA = [

@@ -20,6 +20,8 @@ window.currentVolume = 80;
 
 // ========== CẬP NHẬT GIAO DIỆN PLAYER ==========
 function updatePlayerUI() {
+  if (!window.currentSong) return;
+  
   const percent = (window.currentTime / window.currentSong.duration) * 100 || 0;
   const progressFill = document.getElementById('progressFill');
   if (progressFill) progressFill.style.width = `${percent}%`;
@@ -32,26 +34,30 @@ function updatePlayerUI() {
   const npSongName = document.getElementById('npSongName');
   const npArtist = document.getElementById('npArtist');
   const npCover = document.getElementById('npCover');
-  if (npSongName) npSongName.innerText = window.currentSong.name;
-  if (npArtist) npArtist.innerText = window.currentSong.artist;
+  
+  if (npSongName) npSongName.innerText = window.currentSong.name || "Chưa chọn bài hát";
+  if (npArtist) npArtist.innerText = window.currentSong.artist || "SoundWave";
+  
   if (npCover) {
     if (window.currentSongObj && window.currentSongObj.image) {
       npCover.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
     } else {
-      npCover.innerHTML = window.currentSong.emoji;
+      npCover.innerHTML = '🎵'; // Icon mặc định
     }
   }
   
   const bpName = document.getElementById('bpName');
   const bpArtist = document.getElementById('bpArtist');
   const bpThumb = document.getElementById('bpThumb');
-  if (bpName) bpName.innerText = window.currentSong.name;
-  if (bpArtist) bpArtist.innerText = window.currentSong.artist;
+  
+  if (bpName) bpName.innerText = window.currentSong.name || "Chưa chọn bài hát";
+  if (bpArtist) bpArtist.innerText = window.currentSong.artist || "Mời bạn chọn nhạc";
+  
   if (bpThumb) {
     if (window.currentSongObj && window.currentSongObj.image) {
       bpThumb.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
     } else {
-      bpThumb.innerHTML = window.currentSong.emoji;
+      bpThumb.innerHTML = '🎵'; // Icon mặc định
     }
   }
 }
@@ -146,7 +152,7 @@ function playSong(song) {
     return;
   }
   window.currentSongObj = song;
-  window.currentSong = { name: song.name, artist: song.artist, duration: song.duration || 180, emoji: song.emoji || '🎤' };
+  window.currentSong = { name: song.name, artist: song.artist, duration: song.duration || 180 };
   window.currentTime = 0;
   updatePlayerUI();
   window.updateLikeBtn();
