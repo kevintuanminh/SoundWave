@@ -98,22 +98,23 @@ function initNpm() {
 
   // Gắn sự kiện cho các nút trong modal
   const bind = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
-  bind('npmPlayPauseBtn', () => window.togglePlay());
+  bind('npmPlayPauseBtn', () => window.togglePlayPause());
   bind('npmNextBtn', () => window.playNextSong());
   bind('npmPrevBtn', () => window.playPrevSong());
   bind('npmShuffleBtn', () => window.toggleShuffle());
-  bind('npmRepeatBtn', () => window.toggleRepeat());
+  bind('npmRepeatBtn', () => window.cycleRepeat());
 
   // TUA NHẠC (SEEKING)
   const handleSeek = (barId, e) => {
     const bar = document.getElementById(barId);
     if (!bar || !window.currentSong || !window.soundcloudWidget) return;
     const rect = bar.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percent = Math.min(Math.max(x / rect.width, 0), 1);
+    const x = e.clientX || (e.touches && e.touches[0].clientX);
+    if (!x) return;
+    const offsetX = x - rect.left;
+    const percent = Math.min(Math.max(offsetX / rect.width, 0), 1);
     const seekToMs = percent * window.currentSong.duration * 1000;
     window.soundcloudWidget.seekTo(seekToMs);
-    // Cập nhật UI ngay lập tức
     window.currentTime = seekToMs / 1000;
     updatePlayerUI();
   };
@@ -234,11 +235,6 @@ function playSong(song) {
   updatePlayerUI();
   window.updateLikeBtn();
   window.saveHistory(song);
-  stopTimeUpdate();
-  window.playerReady = false;
-  
-  const cover = document.getElementById('npCover');
-  if (cover) cover.classList.add('spinning');
   
   if (typeof SC === 'undefined') {
     var script = document.createElement('script');
@@ -250,21 +246,29 @@ function playSong(song) {
   }
 }
 
-function pauseSong() {
-  if (window.soundcloudWidget && typeof SC !== 'undefined') window.soundcloudWidget.pause();
-  window.isPlaying = false;
-  stopTimeUpdate();
-  const playBtn = document.getElementById('playPauseBtn');
-  const bpPlayBtn = document.getElementById('bpPlayPauseBtn');
-  if (playBtn) playBtn.innerHTML = '▶';
-  if (bpPlayBtn) bpPlayBtn.innerHTML = '▶';
+function togglePlayPause() {
+  if (!window.soundcloudWidget) return;
+  
+  window.soundcloudWidget.isPaused(function(paused) {
+    if (paused) {
+      window.isPlaying = true;
+      window.soundcloudWidget.play();
+    } else {
+      window.isPlaying = false;
+      window.soundcloudWidget.pause();
+    }
+    updatePlayerUI();
+  });
 }
 
-function togglePlayPause() {
-  if (!window.soundcloudWidget || typeof SC === 'undefined') return;
-  if (window.isPlaying) window.soundcloudWidget.pause();
-  else window.soundcloudWidget.play();
-}
+// Giải pháp "Mồi" nhạc cho iOS
+document.addEventListener('touchstart', function() {
+  if (window.soundcloudWidget && !window.playerUnlocked) {
+    window.soundcloudWidget.play();
+    window.soundcloudWidget.pause();
+    window.playerUnlocked = true;
+  }
+}, { once: true });
 
 function playNextSong() {
   stopTimeUpdate();
@@ -285,7 +289,7 @@ function playNextSong() {
   }
 }
 
-function playPreviousSong() {
+function playPrevSong() {
   stopTimeUpdate();
   const list = window.trendingSongs && window.trendingSongs.length > 0 ? window.trendingSongs : (window.SONGS_DATA || []);
   if (list.length > 0) {
@@ -369,10 +373,9 @@ function initKeyboard() {
 
 // Export ra window
 window.playSongFromMain = playSong;
-window.pauseSong = pauseSong;
 window.togglePlayPause = togglePlayPause;
 window.playNextSong = playNextSong;
-window.playPreviousSong = playPreviousSong;
+window.playPrevSong = playPrevSong;
 window.toggleShuffle = toggleShuffle;
 window.cycleRepeat = cycleRepeat;
 window.seekTo = seekTo;
