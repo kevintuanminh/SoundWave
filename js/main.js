@@ -29,8 +29,8 @@ function init() {
   document.getElementById('bpPlayPauseBtn')?.addEventListener('click', window.togglePlayPause);
   document.getElementById('nextBtn')?.addEventListener('click', window.playNextSong);
   document.getElementById('bpNextBtn')?.addEventListener('click', window.playNextSong);
-  document.getElementById('prevBtn')?.addEventListener('click', window.playPreviousSong);
-  document.getElementById('bpPrevBtn')?.addEventListener('click', window.playPreviousSong);
+  document.getElementById('prevBtn')?.addEventListener('click', window.playPrevSong);
+  document.getElementById('bpPrevBtn')?.addEventListener('click', window.playPrevSong);
   document.getElementById('shuffleCtrlBtn')?.addEventListener('click', window.toggleShuffle);
   document.getElementById('repeatCtrlBtn')?.addEventListener('click', window.cycleRepeat);
 
