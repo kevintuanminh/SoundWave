@@ -55,7 +55,9 @@ function updatePlayerUI() {
     const el = document.getElementById(c.id);
     if (el) {
       if (window.currentSongObj && window.currentSongObj.image) {
-        if (!el.querySelector('img')) {
+        const currentImg = el.querySelector('img');
+        // Chỉ cập nhật nếu chưa có ảnh HOẶC ảnh hiện tại khác ảnh bài hát mới
+        if (!currentImg || currentImg.src !== window.currentSongObj.image) {
           el.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
         }
       } else {
