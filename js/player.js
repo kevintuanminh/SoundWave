@@ -229,6 +229,12 @@ function playSong(song) {
     window.showToast('Bài hát này chưa có link phát!', 'error');
     return;
   }
+  
+  // Mẹo cho iOS: Nếu đã có widget, gửi lệnh play ngay để "giữ chỗ"
+  if (window.soundcloudWidget) {
+    window.soundcloudWidget.play();
+  }
+
   window.currentSongObj = song;
   window.currentSong = { name: song.name, artist: song.artist, duration: song.duration || 180 };
   window.currentTime = 0;
