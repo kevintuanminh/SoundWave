@@ -213,8 +213,17 @@ function escapeHtml(str) {
 }
 
 function setActiveNav(btn) {
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  // Xóa active ở cả sidebar và mobile nav
+  document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(i => i.classList.remove('active'));
+  
+  if (btn) {
+    btn.classList.add('active');
+    // Nếu click ở mobile nav, tìm nút tương ứng ở sidebar để đồng bộ (và ngược lại)
+    const tab = btn.dataset.tab;
+    if (tab) {
+      document.querySelectorAll(`[data-tab="${tab}"]`).forEach(i => i.classList.add('active'));
+    }
+  }
 }
 
 function initMenu() {
