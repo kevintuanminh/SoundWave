@@ -152,7 +152,7 @@ function stopTimeUpdate() {
 }
 
 // ========== KHỞI TẠO SOUNDCLOUD PLAYER ==========
-function initSoundCloudPlayer(trackUrl, song) {
+function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
   const playerDiv = document.getElementById('soundcloudPlayer');
   if (!playerDiv) return;
   
@@ -161,6 +161,7 @@ function initSoundCloudPlayer(trackUrl, song) {
     const iframe = document.createElement('iframe');
     iframe.id = "sc-widget-iframe";
     iframe.width = "0"; iframe.height = "0"; iframe.style.display = "none";
+    // ✅ THÊM auto_play=true VÀO URL
     iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
     iframe.setAttribute('allow', 'autoplay; encrypted-media');
     playerDiv.appendChild(iframe);
@@ -168,11 +169,15 @@ function initSoundCloudPlayer(trackUrl, song) {
     window.soundcloudWidget = SC.Widget(iframe);
     window.soundcloudIframe = iframe;
     
-    // Gắn sự kiện 1 lần
     window.soundcloudWidget.bind(SC.Widget.Events.READY, function() {
       window.playerReady = true;
       window.soundcloudWidget.setVolume(window.currentVolume);
-      window.soundcloudWidget.play();
+      
+      // ✅ FORCE PLAY NGAY SAU KHI READY
+      if (autoPlay) {
+        window.soundcloudWidget.play();
+        window.isPlaying = true;
+      }
       startTimeUpdate();
     });
 
@@ -204,19 +209,26 @@ function initSoundCloudPlayer(trackUrl, song) {
       }
     });
   } else {
-    // Nếu đã có widget, chỉ load bài mới
+    // ✅ SỬA: Gọi play() NGAY SAU load()
     window.soundcloudWidget.load(trackUrl, {
-      auto_play: true,
+      auto_play: true,  // ← BẮT BUỘC: true
       hide_related: true,
       show_comments: false,
       show_user: false,
       show_reposts: false,
       visual: false,
       callback: function() {
+        // ✅ FORCE PLAY trong callback
         window.soundcloudWidget.play();
+        window.isPlaying = true;
+        startTimeUpdate();
+        
         // Cập nhật duration mới
         window.soundcloudWidget.getDuration(function(d) {
-           if (d) window.currentSong.duration = d / 1000;
+           if (d) {
+             window.currentSong.duration = d / 1000;
+             updatePlayerUI();
+           }
         });
       }
     });
