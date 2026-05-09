@@ -17,6 +17,8 @@ if (userPlaylists.length === 0) {
 
 function savePlaylists() {
   localStorage.setItem('userPlaylists', JSON.stringify(userPlaylists));
+  // Thông báo cho các trang khác (như Library mobile) cập nhật lại UI
+  window.dispatchEvent(new Event('playlistUpdated'));
 }
 
 function buildSidebarPlaylists() {
@@ -41,19 +43,19 @@ function buildSidebarPlaylists() {
   document.querySelectorAll('.playlist-item').forEach(item => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
-      openPlaylistDetail(parseInt(item.dataset.playlistId));
+      showPlaylistDetail(parseInt(item.dataset.playlistId));
     });
   });
 }
 
-function openPlaylistDetail(playlistId) {
+function showPlaylistDetail(playlistId) {
   const playlist = userPlaylists.find(p => p.id === playlistId);
   if (!playlist) return;
   
   let songList = playlist.songs.length === 0 
     ? '<div style="text-align:center;padding:2rem;color:#a09cb8">Chưa có bài hát nào</div>'
     : playlist.songs.map((song, index) => `
-      <div class="playlist-song-item" data-song='${JSON.stringify(song)}'>
+      <div class="playlist-song-item" data-song='${JSON.stringify(song).replace(/'/g, "&apos;")}'>
         <div class="playlist-song-rank">${index + 1}</div>
         <div class="playlist-song-info">
           <div class="playlist-song-name">${window.escapeHtml(song.name)}</div>
@@ -98,7 +100,6 @@ function openPlaylistDetail(playlistId) {
   modal.querySelectorAll('.play-song-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const song = JSON.parse(btn.closest('.playlist-song-item').dataset.song);
-      // Gán playlist này làm danh sách phát hiện tại để có thể chuyển bài tiếp theo
       if (window.updateTrendingSongs) {
         window.updateTrendingSongs(playlist.songs);
       }
@@ -116,7 +117,7 @@ function openPlaylistDetail(playlistId) {
         savePlaylists();
         buildSidebarPlaylists();
         modal.remove();
-        openPlaylistDetail(playlistId);
+        showPlaylistDetail(playlistId);
       }
     });
   });
@@ -148,7 +149,7 @@ function showAddToPlaylistModal(song) {
       addSongToPlaylist(parseInt(item.dataset.playlistId), song);
       modal.classList.remove('show');
       overlay?.classList.remove('show');
-      alert(`Đã thêm "${song.name}" vào playlist!`);
+      window.showToast(`Đã thêm vào playlist "${userPlaylists.find(p=>p.id==item.dataset.playlistId).name}"`);
     });
   });
 }
@@ -157,16 +158,16 @@ function addSongToPlaylist(playlistId, song) {
   const playlist = userPlaylists.find(p => p.id === playlistId);
   if (playlist) {
     if (!playlist.songs.some(s => s.name === song.name && s.artist === song.artist)) {
-      playlist.songs.push({ name: song.name, artist: song.artist, emoji: song.emoji, soundCloudUrl: song.soundCloudUrl });
+      playlist.songs.push({ name: song.name, artist: song.artist, soundCloudUrl: song.soundCloudUrl, image: song.image });
       savePlaylists();
       buildSidebarPlaylists();
     } else {
-      alert('Bài hát đã có trong playlist này!');
+      window.showToast('Bài hát đã có trong playlist này!', 'error');
     }
   }
 }
 
-function openCreatePlaylistModal() {
+function showCreatePlaylistModal() {
   const modal = document.getElementById('createPlaylistModal');
   const overlay = document.getElementById('modalOverlay');
   if (modal) {
@@ -189,9 +190,9 @@ function confirmCreatePlaylist() {
     savePlaylists();
     buildSidebarPlaylists();
     closeCreatePlaylistModal();
-    alert(`Đã tạo playlist "${name}"!`);
+    window.showToast(`Đã tạo playlist "${name}"!`);
   } else {
-    alert('Vui lòng nhập tên playlist!');
+    window.showToast('Vui lòng nhập tên playlist!', 'error');
   }
 }
 
@@ -211,10 +212,10 @@ function initPlaylistEvents() {
 
   document.getElementById('createNewPlaylistFromModal')?.addEventListener('click', () => {
     document.getElementById('playlistManager')?.classList.remove('show');
-    openCreatePlaylistModal();
+    showCreatePlaylistModal();
   });
 
-  document.getElementById('createPlaylistBtn')?.addEventListener('click', openCreatePlaylistModal);
+  document.getElementById('createPlaylistBtn')?.addEventListener('click', showCreatePlaylistModal);
   document.getElementById('confirmCreatePlaylist')?.addEventListener('click', confirmCreatePlaylist);
 }
 
@@ -222,3 +223,7 @@ function initPlaylistEvents() {
 window.buildSidebarPlaylists = buildSidebarPlaylists;
 window.showAddToPlaylistModal = showAddToPlaylistModal;
 window.initPlaylistEvents = initPlaylistEvents;
+window.showPlaylistDetail = showPlaylistDetail;
+window.showCreatePlaylistModal = showCreatePlaylistModal;
+window.closeCreatePlaylistModal = closeCreatePlaylistModal;
+window.confirmCreatePlaylist = confirmCreatePlaylist;

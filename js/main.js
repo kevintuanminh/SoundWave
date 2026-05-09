@@ -7,10 +7,13 @@ function init() {
   // 1. Kiểm tra trạng thái người dùng
   window.checkLoginStatus();
   
-  // 2. Khởi tạo menu điều hướng
-  window.initMenu();
+  // Khởi tạo menu điều hướng
+  if (window.initMenu) window.initMenu();
   
-  // 3. Load nội dung mặc định (Trang chủ)
+  // Khởi tạo giao diện Đang phát Mobile
+  if (window.initNpm) window.initNpm();
+  
+  // Load nội dung mặc định (Trang chủ)
   window.loadContent('home');
   
   // 4. Khởi tạo các điều khiển player

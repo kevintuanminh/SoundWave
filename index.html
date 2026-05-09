@@ -158,7 +158,7 @@
       <div class="mobile-nav-item active" data-tab="home">🏠<span>Trang chủ</span></div>
       <div class="mobile-nav-item" data-tab="trending">🔥<span>Thịnh hành</span></div>
       <div class="mobile-nav-item" data-tab="favorites">❤️<span>Yêu thích</span></div>
-      <div class="mobile-nav-item" data-tab="artists">🎤<span>Nghệ sĩ</span></div>
+      <div class="mobile-nav-item" data-tab="library">📚<span>Thư viện</span></div>
     </div>
 
   </div>
@@ -188,6 +188,50 @@
     <div class="modal-body">
       <input type="text" id="newPlaylistName" placeholder="Tên playlist...">
       <button class="btn-create" id="confirmCreatePlaylist">Tạo</button>
+    </div>
+  </div>
+
+  <!-- NOW PLAYING MODAL (mobile full screen) -->
+  <div class="now-playing-modal" id="nowPlayingModal">
+    <div class="npm-header">
+      <button class="npm-close" id="closeNpmBtn">▼</button>
+      <div class="npm-header-title">Đang phát</div>
+      <button class="npm-more">⋮</button>
+    </div>
+    
+    <div class="npm-content">
+      <div class="npm-cover-container">
+        <div class="npm-cover" id="npmCover">🎵</div>
+      </div>
+      
+      <div class="npm-info">
+        <div class="npm-name" id="npmName">Tên bài hát</div>
+        <div class="npm-artist" id="npmArtist">Nghệ sĩ</div>
+      </div>
+      
+      <div class="npm-progress-section">
+        <div class="npm-progress-bar" id="npmProgressBar">
+          <div class="npm-progress-fill" id="npmProgressFill"></div>
+        </div>
+        <div class="npm-times">
+          <span id="npmCurrentTime">0:00</span>
+          <span id="npmTotalTime">0:00</span>
+        </div>
+      </div>
+      
+      <div class="npm-controls">
+        <button class="npm-btn" id="npmShuffleBtn">🔀</button>
+        <button class="npm-btn" id="npmPrevBtn">⏮</button>
+        <button class="npm-play-btn" id="npmPlayPauseBtn">▶</button>
+        <button class="npm-btn" id="npmNextBtn">⏭</button>
+        <button class="npm-btn" id="npmRepeatBtn">🔁</button>
+      </div>
+
+      <div class="npm-footer-actions">
+         <button class="npm-action-icon">❤️</button>
+         <button class="npm-action-icon">➕</button>
+         <!-- <button class="npm-action-icon">📻</button> -->
+      </div>
     </div>
   </div>
 

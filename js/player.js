@@ -23,44 +23,108 @@ function updatePlayerUI() {
   if (!window.currentSong) return;
   
   const percent = (window.currentTime / window.currentSong.duration) * 100 || 0;
-  const progressFill = document.getElementById('progressFill');
-  if (progressFill) progressFill.style.width = `${percent}%`;
   
-  const currentTimeSpan = document.getElementById('currentTime');
-  const totalTimeSpan = document.getElementById('totalTime');
-  if (currentTimeSpan) currentTimeSpan.innerText = window.formatTime(window.currentTime);
-  if (totalTimeSpan) totalTimeSpan.innerText = window.formatTime(window.currentSong.duration);
+  // Progress Bars
+  const bars = ['progressFill', 'npmProgressFill'];
+  bars.forEach(id => { const el = document.getElementById(id); if (el) el.style.width = `${percent}%`; });
   
-  const npSongName = document.getElementById('npSongName');
-  const npArtist = document.getElementById('npArtist');
-  const npCover = document.getElementById('npCover');
+  // Times
+  const updateTime = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+  updateTime('currentTime', window.formatTime(window.currentTime));
+  updateTime('npmCurrentTime', window.formatTime(window.currentTime));
+  updateTime('totalTime', window.formatTime(window.currentSong.duration));
+  updateTime('npmTotalTime', window.formatTime(window.currentSong.duration));
   
-  if (npSongName) npSongName.innerText = window.currentSong.name || "Chưa chọn bài hát";
-  if (npArtist) npArtist.innerText = window.currentSong.artist || "SoundWave";
+  // Song Info
+  const updateInfo = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val || ""; };
+  updateInfo('npSongName', window.currentSong.name);
+  updateInfo('npmName', window.currentSong.name);
+  updateInfo('npArtist', window.currentSong.artist);
+  updateInfo('npmArtist', window.currentSong.artist);
+  updateInfo('bpName', window.currentSong.name);
+  updateInfo('bpArtist', window.currentSong.artist);
   
-  if (npCover) {
-    if (window.currentSongObj && window.currentSongObj.image) {
-      npCover.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
-    } else {
-      npCover.innerHTML = '🎵'; // Icon mặc định
+  // Covers
+  const covers = [
+    { id: 'npCover', icon: '🎵' },
+    { id: 'bpThumb', icon: '🎵' },
+    { id: 'npmCover', icon: '🎵' }
+  ];
+  
+  covers.forEach(c => {
+    const el = document.getElementById(c.id);
+    if (el) {
+      if (window.currentSongObj && window.currentSongObj.image) {
+        if (!el.querySelector('img')) {
+          el.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
+        }
+      } else {
+        el.innerHTML = c.icon;
+      }
+      // Animation
+      if (window.isPlaying) {
+        el.classList.add('spinning');
+        el.classList.remove('paused');
+      } else {
+        el.classList.add('paused');
+      }
     }
-  }
-  
-  const bpName = document.getElementById('bpName');
-  const bpArtist = document.getElementById('bpArtist');
-  const bpThumb = document.getElementById('bpThumb');
-  
-  if (bpName) bpName.innerText = window.currentSong.name || "Chưa chọn bài hát";
-  if (bpArtist) bpArtist.innerText = window.currentSong.artist || "Mời bạn chọn nhạc";
-  
-  if (bpThumb) {
-    if (window.currentSongObj && window.currentSongObj.image) {
-      bpThumb.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
-    } else {
-      bpThumb.innerHTML = '🎵'; // Icon mặc định
-    }
-  }
+  });
+
+  // Buttons
+  const playBtns = ['playPauseBtn', 'bpPlayPauseBtn', 'npmPlayPauseBtn'];
+  playBtns.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = window.isPlaying ? '⏸' : '▶';
+  });
 }
+
+// ========== KHỞI TẠO SỰ KIỆN NPM ==========
+function initNpm() {
+  const modal = document.getElementById('nowPlayingModal');
+  const bottomPlayer = document.getElementById('bottomPlayer');
+  const closeBtn = document.getElementById('closeNpmBtn');
+  
+  if (bottomPlayer) {
+    bottomPlayer.onclick = (e) => {
+      if (e.target.closest('.bp-controls')) return;
+      modal.classList.add('show');
+    };
+  }
+  
+  if (closeBtn) closeBtn.onclick = () => modal.classList.remove('show');
+
+  // Gắn sự kiện cho các nút trong modal
+  const bind = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+  bind('npmPlayPauseBtn', () => window.togglePlay());
+  bind('npmNextBtn', () => window.playNextSong());
+  bind('npmPrevBtn', () => window.playPrevSong());
+  bind('npmShuffleBtn', () => window.toggleShuffle());
+  bind('npmRepeatBtn', () => window.toggleRepeat());
+
+  // TUA NHẠC (SEEKING)
+  const handleSeek = (barId, e) => {
+    const bar = document.getElementById(barId);
+    if (!bar || !window.currentSong || !window.soundcloudWidget) return;
+    const rect = bar.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = Math.min(Math.max(x / rect.width, 0), 1);
+    const seekToMs = percent * window.currentSong.duration * 1000;
+    window.soundcloudWidget.seekTo(seekToMs);
+    // Cập nhật UI ngay lập tức
+    window.currentTime = seekToMs / 1000;
+    updatePlayerUI();
+  };
+
+  const npmBar = document.getElementById('npmProgressBar');
+  if (npmBar) npmBar.onclick = (e) => handleSeek('npmProgressBar', e);
+
+  const mainBar = document.getElementById('progressBar');
+  if (mainBar) mainBar.onclick = (e) => handleSeek('progressBar', e);
+}
+
+// Thêm initNpm vào window để gọi từ main.js
+window.initNpm = initNpm;
 
 // ========== HÀM CẬP NHẬT THỜI GIAN ==========
 function startTimeUpdate() {
@@ -93,7 +157,7 @@ function initSoundCloudPlayer(trackUrl, song) {
   const iframe = document.createElement('iframe');
   iframe.width = "0"; iframe.height = "0"; iframe.style.display = "none";
   iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
-  iframe.setAttribute('allow', 'autoplay');
+  iframe.setAttribute('allow', 'autoplay; encrypted-media');
   playerDiv.appendChild(iframe);
   
   window.soundcloudWidget = SC.Widget(iframe);
@@ -101,6 +165,9 @@ function initSoundCloudPlayer(trackUrl, song) {
   
   window.soundcloudWidget.bind(SC.Widget.Events.READY, function() {
     window.playerReady = true;
+    // Ép âm lượng lên mức hiện tại (mặc định 80)
+    window.soundcloudWidget.setVolume(window.currentVolume);
+    
     window.soundcloudWidget.getDuration(function(duration) {
       if (duration && duration > 0) {
         window.currentSong.duration = duration / 1000;
@@ -108,6 +175,8 @@ function initSoundCloudPlayer(trackUrl, song) {
         if (totalTimeSpan) totalTimeSpan.innerText = window.formatTime(window.currentSong.duration);
       }
     });
+    // Thử phát nhạc lại một lần nữa để chắc chắn
+    window.soundcloudWidget.play();
     startTimeUpdate();
   });
   
@@ -117,6 +186,7 @@ function initSoundCloudPlayer(trackUrl, song) {
     const bpPlayBtn = document.getElementById('bpPlayPauseBtn');
     if (playBtn) playBtn.innerHTML = '⏸';
     if (bpPlayBtn) bpPlayBtn.innerHTML = '⏸';
+    updatePlayerUI(); // Cập nhật ngay để đĩa quay
     startTimeUpdate();
   });
   
@@ -126,6 +196,7 @@ function initSoundCloudPlayer(trackUrl, song) {
     const bpPlayBtn = document.getElementById('bpPlayPauseBtn');
     if (playBtn) playBtn.innerHTML = '▶';
     if (bpPlayBtn) bpPlayBtn.innerHTML = '▶';
+    updatePlayerUI(); // Cập nhật ngay để đĩa dừng
     stopTimeUpdate();
   });
   

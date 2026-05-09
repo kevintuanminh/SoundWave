@@ -1,0 +1,49 @@
+<div>
+  <div class="section-header">
+    <div class="section-title">📚 Thư viện của tôi</div>
+    <button class="add-btn" onclick="if(window.showCreatePlaylistModal) window.showCreatePlaylistModal()" style="font-size: 1.5rem; background:none; border:none; cursor:pointer;" title="Tạo playlist mới">➕</button>
+  </div>
+
+  <!-- Playlists Section -->
+  <div class="sidebar-section" style="padding: 0; margin-bottom: 2rem;">
+    <div class="sidebar-label" style="padding: 1rem 0; font-size: 1rem; color: var(--text)">Playlist của bạn</div>
+    <div id="libPlaylistList">
+      <!-- Sẽ render playlist ở đây -->
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function renderLib() {
+    const playlists = JSON.parse(localStorage.getItem('userPlaylists')) || [];
+    const pList = document.getElementById('libPlaylistList');
+    if (pList) {
+      if (playlists.length === 0) {
+        pList.innerHTML = `
+          <div style="text-align:center;padding:3rem 1rem">
+            <div style="font-size:3rem;margin-bottom:1rem">📁</div>
+            <div style="color:var(--text2);margin-bottom:1.5rem">Bạn chưa tạo playlist nào</div>
+            <button class="btn-primary" onclick="if(window.showCreatePlaylistModal) window.showCreatePlaylistModal()">+ Tạo playlist ngay</button>
+          </div>
+        `;
+      } else {
+        pList.innerHTML = playlists.map(p => `
+          <div class="playlist-item" onclick="if(window.showPlaylistDetail) window.showPlaylistDetail('${p.id}')">
+            <div class="playlist-thumb" style="background:var(--surface2)">📂</div>
+            <div class="playlist-info">
+              <div class="playlist-name">${p.name}</div>
+              <div class="playlist-count">${p.songs.length} bài hát</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+  }
+
+  renderLib();
+
+  // Lắng nghe sự kiện thay đổi playlist để cập nhật UI
+  window.addEventListener('playlistUpdated', renderLib);
+})();
+</script>
