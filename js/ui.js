@@ -11,7 +11,7 @@ function checkLoginStatus() {
   if (username && username !== 'Người dùng') {
     userSection.innerHTML = `
       <div class="user-info-header">
-        <span class="username-display">👋 ${username}</span>
+        <span class="username-display" id="profileTrigger" style="cursor:pointer">👋 ${username}</span>
         <button class="logout-simple-btn" id="logoutBtn">Đăng xuất</button>
       </div>
     `;
@@ -23,6 +23,12 @@ function checkLoginStatus() {
           localStorage.removeItem('rememberedUser');
           window.location.href = 'login.html';
         }
+      });
+    }
+    const profileBtn = document.getElementById('profileTrigger');
+    if (profileBtn) {
+      profileBtn.addEventListener('click', () => {
+        loadContent('profile');
       });
     }
   } else {

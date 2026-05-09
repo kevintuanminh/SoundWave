@@ -155,67 +155,71 @@ function initSoundCloudPlayer(trackUrl, song) {
   const playerDiv = document.getElementById('soundcloudPlayer');
   if (!playerDiv) return;
   
-  playerDiv.innerHTML = '';
-  const iframe = document.createElement('iframe');
-  iframe.width = "0"; iframe.height = "0"; iframe.style.display = "none";
-  iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
-  iframe.setAttribute('allow', 'autoplay; encrypted-media');
-  playerDiv.appendChild(iframe);
-  
-  window.soundcloudWidget = SC.Widget(iframe);
-  window.soundcloudIframe = iframe;
-  
-  window.soundcloudWidget.bind(SC.Widget.Events.READY, function() {
-    window.playerReady = true;
-    // Ép âm lượng lên mức hiện tại (mặc định 80)
-    window.soundcloudWidget.setVolume(window.currentVolume);
+  if (!window.soundcloudWidget) {
+    // Chỉ tạo iframe 1 lần duy nhất
+    const iframe = document.createElement('iframe');
+    iframe.id = "sc-widget-iframe";
+    iframe.width = "0"; iframe.height = "0"; iframe.style.display = "none";
+    iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
+    iframe.setAttribute('allow', 'autoplay; encrypted-media');
+    playerDiv.appendChild(iframe);
     
-    window.soundcloudWidget.getDuration(function(duration) {
-      if (duration && duration > 0) {
-        window.currentSong.duration = duration / 1000;
-        const totalTimeSpan = document.getElementById('totalTime');
-        if (totalTimeSpan) totalTimeSpan.innerText = window.formatTime(window.currentSong.duration);
+    window.soundcloudWidget = SC.Widget(iframe);
+    window.soundcloudIframe = iframe;
+    
+    // Gắn sự kiện 1 lần
+    window.soundcloudWidget.bind(SC.Widget.Events.READY, function() {
+      window.playerReady = true;
+      window.soundcloudWidget.setVolume(window.currentVolume);
+      window.soundcloudWidget.play();
+      startTimeUpdate();
+    });
+
+    window.soundcloudWidget.bind(SC.Widget.Events.PLAY, function() {
+      window.isPlaying = true;
+      updatePlayerUI();
+      startTimeUpdate();
+      
+      // Fix iOS 1s stop: Kiểm tra sau 1s nếu bị dừng thì phát lại
+      setTimeout(() => {
+        window.soundcloudWidget.isPaused(function(paused) {
+          if (paused && window.isPlaying) window.soundcloudWidget.play();
+        });
+      }, 1000);
+    });
+
+    window.soundcloudWidget.bind(SC.Widget.Events.PAUSE, function() {
+      window.isPlaying = false;
+      updatePlayerUI();
+      stopTimeUpdate();
+    });
+
+    window.soundcloudWidget.bind(SC.Widget.Events.FINISH, function() {
+      if (window.repeatMode === 2) {
+        window.soundcloudWidget.seekTo(0);
+        window.soundcloudWidget.play();
+      } else {
+        playNextSong();
       }
     });
-    // Thử phát nhạc lại một lần nữa để chắc chắn
-    window.soundcloudWidget.play();
-    startTimeUpdate();
-  });
-  
-  window.soundcloudWidget.bind(SC.Widget.Events.PLAY, function() {
-    window.isPlaying = true;
-    const playBtn = document.getElementById('playPauseBtn');
-    const bpPlayBtn = document.getElementById('bpPlayPauseBtn');
-    if (playBtn) playBtn.innerHTML = '⏸';
-    if (bpPlayBtn) bpPlayBtn.innerHTML = '⏸';
-    updatePlayerUI(); // Cập nhật ngay để đĩa quay
-    startTimeUpdate();
-  });
-  
-  window.soundcloudWidget.bind(SC.Widget.Events.PAUSE, function() {
-    window.isPlaying = false;
-    const playBtn = document.getElementById('playPauseBtn');
-    const bpPlayBtn = document.getElementById('bpPlayPauseBtn');
-    if (playBtn) playBtn.innerHTML = '▶';
-    if (bpPlayBtn) bpPlayBtn.innerHTML = '▶';
-    updatePlayerUI(); // Cập nhật ngay để đĩa dừng
-    stopTimeUpdate();
-  });
-  
-  window.soundcloudWidget.bind(SC.Widget.Events.FINISH, function() {
-    stopTimeUpdate();
-    if (window.repeatMode === 2) {
-      window.soundcloudWidget.seekTo(0);
-      window.soundcloudWidget.play();
-    } else {
-      playNextSong();
-    }
-  });
-  
-  window.soundcloudWidget.bind(SC.Widget.Events.ERROR, function(error) {
-    console.error('SoundCloud error:', error);
-    alert('Không thể phát bài này. Vui lòng thử bài khác.');
-  });
+  } else {
+    // Nếu đã có widget, chỉ load bài mới
+    window.soundcloudWidget.load(trackUrl, {
+      auto_play: true,
+      hide_related: true,
+      show_comments: false,
+      show_user: false,
+      show_reposts: false,
+      visual: false,
+      callback: function() {
+        window.soundcloudWidget.play();
+        // Cập nhật duration mới
+        window.soundcloudWidget.getDuration(function(d) {
+           if (d) window.currentSong.duration = d / 1000;
+        });
+      }
+    });
+  }
 }
 
 // ========== ĐIỀU KHIỂN PHÁT NHẠC ==========
