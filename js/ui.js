@@ -287,13 +287,15 @@ const ALL_GENRES = [
   { id: 'vpop', name: 'V-Pop', emoji: '🎤' },
   { id: 'pop', name: 'Pop', emoji: '🎸' },
   { id: 'chill', name: 'Chill', emoji: '🌿' },
+  { id: 'rock', name: 'Rock', emoji: '🤘' },
+  { id: 'ballad', name: 'Ballad', emoji: '💙' },
+  { id: 'hiphop', name: 'Hip-hop', emoji: '🕶️' },
+  { id: 'edm', name: 'EDM', emoji: '💥' },
+  { id: 'jazz', name: 'Jazz', emoji: '🎷' },
   { id: 'lofi', name: 'Lofi', emoji: '☕' },
   { id: 'remix', name: 'Remix', emoji: '⚡' },
   { id: 'indie', name: 'Indie', emoji: '🌻' },
   { id: 'rap', name: 'Rap', emoji: '🎙️' },
-  { id: 'rock', name: 'Rock', emoji: '🤘' },
-  { id: 'edm', name: 'EDM', emoji: '💥' },
-  { id: 'ballad', name: 'Ballad', emoji: '💙' },
   { id: 'jpop', name: 'J-Pop', emoji: '🌸' },
   { id: 'kpop', name: 'K-Pop', emoji: '💎' }
 ];
