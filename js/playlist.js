@@ -8,9 +8,9 @@ let userPlaylists = JSON.parse(localStorage.getItem('userPlaylists')) || [];
 // Khởi tạo playlist mặc định
 if (userPlaylists.length === 0) {
   userPlaylists = [
-    { id: 1, name: "🎵 Nhạc buổi sáng", songs: [], created: new Date().toISOString() },
-    { id: 2, name: "🌙 Chill đêm khuya", songs: [], created: new Date().toISOString() },
-    { id: 3, name: "🎤 V-Pop Hits", songs: [], created: new Date().toISOString() }
+    { id: 1, name: "Nhạc buổi sáng", songs: [], created: new Date().toISOString() },
+    { id: 2, name: "Chill đêm khuya", songs: [], created: new Date().toISOString() },
+    { id: 3, name: "V-Pop Hits", songs: [], created: new Date().toISOString() }
   ];
   localStorage.setItem('userPlaylists', JSON.stringify(userPlaylists));
 }
@@ -32,7 +32,9 @@ function buildSidebarPlaylists() {
   
   container.innerHTML = userPlaylists.map(playlist => `
     <div class="playlist-item" data-playlist-id="${playlist.id}">
-      <div class="playlist-thumb" style="background:linear-gradient(135deg,#c084fc,#818cf8)">📋</div>
+      <div class="playlist-thumb" style="background:linear-gradient(135deg,#c084fc,#818cf8)">
+        <i class="fa-solid fa-list-ul"></i>
+      </div>
       <div class="playlist-info">
         <div class="playlist-name">${window.escapeHtml(playlist.name)}</div>
         <div class="playlist-count">${playlist.songs.length} bài</div>
@@ -62,8 +64,8 @@ function showPlaylistDetail(playlistId) {
           <div class="playlist-song-artist">${window.escapeHtml(song.artist)}</div>
         </div>
         <div class="playlist-song-actions">
-          <span class="play-song-btn" title="Phát">▶</span>
-          <span class="remove-song-btn" title="Xóa">🗑️</span>
+          <span class="play-song-btn" title="Phát"><i class="fa-solid fa-play"></i></span>
+          <span class="remove-song-btn" title="Xóa"><i class="fa-solid fa-trash-can"></i></span>
         </div>
       </div>
     `).join('');
@@ -133,7 +135,7 @@ function showAddToPlaylistModal(song) {
     ? '<div style="text-align:center;padding:1rem;color:#a09cb8">Chưa có playlist nào</div>'
     : userPlaylists.map(playlist => `
       <div class="playlist-item-select" data-playlist-id="${playlist.id}">
-        <div class="playlist-icon">📋</div>
+        <div class="playlist-icon"><i class="fa-solid fa-list-ul"></i></div>
         <div class="playlist-info">
           <div class="playlist-name">${window.escapeHtml(playlist.name)}</div>
           <div class="playlist-count">${playlist.songs.length} bài</div>

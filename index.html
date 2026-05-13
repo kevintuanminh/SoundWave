@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/main.css">
   <script src="js/data.js"></script>
 </head>
@@ -24,12 +25,12 @@
     <!-- TOPBAR MỚI -->
     <div class="topbar">
       <div class="topbar-logo" onclick="loadContent('home')">
-        <div class="topbar-logo-icon">🎵</div>
+        <div class="topbar-logo-icon"><i class="fa-solid fa-music"></i></div>
         <span>Sound<br class="logo-mobile-br">Wave</span>
       </div>
 
       <div class="search-bar">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
         <input type="text" id="searchInput" placeholder="Tìm bài hát, nghệ sĩ, album...">
       </div>
 
@@ -47,10 +48,11 @@
       <div class="sidebar">
         <div class="sidebar-section">
           <div class="sidebar-label">Menu</div>
-          <div class="nav-item active" data-tab="home"><span class="nav-icon">🏠</span> Trang chủ</div>
-          <div class="nav-item" data-tab="trending"><span class="nav-icon">🔥</span> Thịnh hành</div>
-          <div class="nav-item" data-tab="favorites"><span class="nav-icon">❤️</span> Yêu thích</div>
-          <div class="nav-item" data-tab="artists"><span class="nav-icon">🎤</span> Nghệ sĩ</div>
+          <div class="nav-item active" data-tab="home"><span class="nav-icon"><i class="fa-solid fa-house"></i></span> Trang chủ</div>
+          <div class="nav-item" data-tab="trending"><span class="nav-icon"><i class="fa-solid fa-fire"></i></span> Thịnh hành</div>
+          <div class="nav-item" data-tab="favorites"><span class="nav-icon"><i class="fa-solid fa-heart"></i></span> Yêu thích</div>
+          <div class="nav-item" data-tab="library"><span class="nav-icon"><i class="fa-solid fa-music"></i></span> Thư viện</div>
+          <div class="nav-item" data-tab="history"><span class="nav-icon"><i class="fa-solid fa-history"></i></span> Lịch sử</div>
         </div>
 
         <div class="sidebar-section">
@@ -71,7 +73,7 @@
             <span class="genre-tag" data-genre="rap">Rap</span>
             <span class="genre-tag" data-genre="jpop">J-Pop</span>
             <span class="genre-tag" data-genre="kpop">K-Pop</span>
-            <span class="genre-tag-more" id="moreGenreBtn" title="Xem thêm thể loại">+</span>
+            <span class="genre-tag-more" id="moreGenreBtn" title="Xem thêm thể loại"><i class="fa-solid fa-plus"></i></span>
           </div>
         </div>
 
@@ -80,33 +82,30 @@
           <div id="myPlaylists">
 
           </div>
-          <div class="nav-item" id="createPlaylistBtn"><span class="nav-icon">＋</span> Tạo playlist mới</div>
+          <div class="nav-item" id="createPlaylistBtn"><span class="nav-icon"><i class="fa-solid fa-square-plus"></i></span> Tạo playlist mới</div>
         </div>
       </div>
 
-      <!-- MAIN CONTENT -->
       <!-- MAIN CONTENT -->
       <div class="content" id="mainContent">
         <!-- Nội dung sẽ được tải từ file pages/ khi nhấn menu -->
         <div class="loading">Đang tải...</div>
       </div>
-      <!-- <div class="content"> -->
 
       <!-- RIGHT PANEL - NOW PLAYING -->
       <div class="right-panel">
         <div class="now-playing-header">
           <span class="np-title">Đang phát</span>
-          <!-- <span class="queue-btn">Hàng chờ</span> -->
         </div>
         <div class="now-playing-art">
-          <div class="np-cover" id="npCover">🎵</div>
+          <div class="np-cover" id="npCover"><i class="fa-solid fa-music"></i></div>
         </div>
         <div class="np-song-info">
           <div class="np-song-name" id="npSongName">Chưa chọn bài hát</div>
           <div class="np-song-artist" id="npArtist">SoundWave</div>
           <div class="np-actions">
-            <button class="np-action-btn" id="likeCurrentBtn" title="Yêu thích (L)">🤍</button>
-            <button class="np-action-btn" id="addToPlaylistNpBtn" title="Thêm vào playlist">➕</button>
+            <button class="np-action-btn" id="likeCurrentBtn" title="Yêu thích (L)"><i class="fa-regular fa-heart"></i></button>
+            <button class="np-action-btn" id="addToPlaylistNpBtn" title="Thêm vào playlist"><i class="fa-solid fa-plus-square"></i></button>
           </div>
         </div>
 
@@ -120,19 +119,19 @@
         </div>
 
         <div class="controls">
-          <button class="ctrl-btn" id="shuffleCtrlBtn">🔀</button>
-          <button class="ctrl-btn" id="prevBtn">⏮</button>
-          <button class="play-btn" id="playPauseBtn">⏸</button>
-          <button class="ctrl-btn" id="nextBtn">⏭</button>
-          <button class="ctrl-btn" id="repeatCtrlBtn">🔁</button>
+          <button class="ctrl-btn" id="shuffleCtrlBtn"><i class="fa-solid fa-shuffle"></i></button>
+          <button class="ctrl-btn" id="prevBtn"><i class="fa-solid fa-backward-step"></i></button>
+          <button class="play-btn" id="playPauseBtn"><i class="fa-solid fa-play"></i></button>
+          <button class="ctrl-btn" id="nextBtn"><i class="fa-solid fa-forward-step"></i></button>
+          <button class="ctrl-btn" id="repeatCtrlBtn"><i class="fa-solid fa-repeat"></i></button>
         </div>
 
         <div class="volume-row">
-          <span class="vol-icon">🔈</span>
+          <span class="vol-icon"><i class="fa-solid fa-volume-off"></i></span>
           <div class="vol-bar" id="volumeBar">
             <div class="vol-fill" id="volumeFill"></div>
           </div>
-          <span class="vol-icon">🔊</span>
+          <span class="vol-icon"><i class="fa-solid fa-volume-high"></i></span>
         </div>
 
         <div class="queue-section">
@@ -146,25 +145,25 @@
     <!-- BOTTOM PLAYER (mobile) -->
     <div class="bottom-player" id="bottomPlayer">
       <div class="bp-track">
-        <div class="bp-thumb" id="bpThumb">🎵</div>
+        <div class="bp-thumb" id="bpThumb"><i class="fa-solid fa-music"></i></div>
         <div class="bp-info">
           <div class="bp-name" id="bpName">Chưa có bài hát</div>
           <div class="bp-artist" id="bpArtist">Mời bạn chọn bài</div>
         </div>
       </div>
       <div class="bp-controls">
-        <button class="bp-btn" id="bpPrevBtn">⏮</button>
-        <button class="bp-play" id="bpPlayPauseBtn">⏸</button>
-        <button class="bp-btn" id="bpNextBtn">⏭</button>
+        <button class="bp-btn" id="bpPrevBtn"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="bp-play" id="bpPlayPauseBtn"><i class="fa-solid fa-play"></i></button>
+        <button class="bp-btn" id="bpNextBtn"><i class="fa-solid fa-forward-step"></i></button>
       </div>
     </div>
 
     <!-- MOBILE NAV BAR -->
     <div class="mobile-nav">
-      <div class="mobile-nav-item active" data-tab="home">🏠<span>Trang chủ</span></div>
-      <div class="mobile-nav-item" data-tab="trending">🔥<span>Thịnh hành</span></div>
-      <div class="mobile-nav-item" data-tab="favorites">❤️<span>Yêu thích</span></div>
-      <div class="mobile-nav-item" data-tab="library">📚<span>Thư viện</span></div>
+      <div class="mobile-nav-item active" data-tab="home"><i class="fa-solid fa-house"></i><span>Trang chủ</span></div>
+      <div class="mobile-nav-item" data-tab="trending"><i class="fa-solid fa-fire"></i><span>Thịnh hành</span></div>
+      <div class="mobile-nav-item" data-tab="favorites"><i class="fa-solid fa-heart"></i><span>Yêu thích</span></div>
+      <div class="mobile-nav-item" data-tab="library"><i class="fa-solid fa-music"></i><span>Thư viện</span></div>
     </div>
 
   </div>
@@ -174,14 +173,14 @@
 
   <div class="playlist-manager" id="playlistManager">
     <div class="playlist-manager-header">
-      <h3>➕ Thêm vào playlist</h3>
-      <span class="playlist-manager-close" id="closePlaylistManager">&times;</span>
+      <h3><i class="fa-solid fa-plus-square"></i> Thêm vào playlist</h3>
+      <span class="playlist-manager-close" id="closePlaylistManager"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="playlist-manager-body" id="playlistListContainer">
       <!-- Danh sách playlist sẽ hiển thị ở đây -->
     </div>
     <div style="padding: 0 1rem 1rem 1rem;">
-      <button class="create-new-playlist-btn" id="createNewPlaylistFromModal">+ Tạo playlist mới</button>
+      <button class="create-new-playlist-btn" id="createNewPlaylistFromModal"><i class="fa-solid fa-plus"></i> Tạo playlist mới</button>
     </div>
   </div>
 
@@ -189,7 +188,7 @@
   <div class="create-playlist-modal" id="createPlaylistModal">
     <div class="modal-header">
       <h3>Tạo playlist mới</h3>
-      <span class="playlist-manager-close" id="closeCreateModal">&times;</span>
+      <span class="playlist-manager-close" id="closeCreateModal"><i class="fa-solid fa-xmark"></i></span>
     </div>
     <div class="modal-body">
       <input type="text" id="newPlaylistName" placeholder="Tên playlist...">
@@ -200,14 +199,14 @@
   <!-- NOW PLAYING MODAL (mobile full screen) -->
   <div class="now-playing-modal" id="nowPlayingModal">
     <div class="npm-header">
-      <button class="npm-close" id="closeNpmBtn">▼</button>
+      <button class="npm-close" id="closeNpmBtn"><i class="fa-solid fa-chevron-down"></i></button>
       <div class="npm-header-title">Đang phát</div>
-      <button class="npm-more">⋮</button>
+      <button class="npm-more"><i class="fa-solid fa-ellipsis-vertical"></i></button>
     </div>
     
     <div class="npm-content">
       <div class="npm-cover-container">
-        <div class="npm-cover" id="npmCover">🎵</div>
+        <div class="npm-cover" id="npmCover"><i class="fa-solid fa-music"></i></div>
       </div>
       
       <div class="npm-info">
@@ -226,17 +225,16 @@
       </div>
       
       <div class="npm-controls">
-        <button class="npm-btn" id="npmShuffleBtn">🔀</button>
-        <button class="npm-btn" id="npmPrevBtn">⏮</button>
-        <button class="npm-play-btn" id="npmPlayPauseBtn">▶</button>
-        <button class="npm-btn" id="npmNextBtn">⏭</button>
-        <button class="npm-btn" id="npmRepeatBtn">🔁</button>
+        <button class="npm-btn" id="npmShuffleBtn"><i class="fa-solid fa-shuffle"></i></button>
+        <button class="npm-btn" id="npmPrevBtn"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="npm-play-btn" id="npmPlayPauseBtn"><i class="fa-solid fa-play"></i></button>
+        <button class="npm-btn" id="npmNextBtn"><i class="fa-solid fa-forward-step"></i></button>
+        <button class="npm-btn" id="npmRepeatBtn"><i class="fa-solid fa-repeat"></i></button>
       </div>
 
       <div class="npm-footer-actions">
-         <button class="npm-action-icon">❤️</button>
-         <button class="npm-action-icon">➕</button>
-         <!-- <button class="npm-action-icon">📻</button> -->
+         <button class="npm-action-icon" id="npmLikeBtn"><i class="fa-regular fa-heart"></i></button>
+         <button class="npm-action-icon" id="npmAddBtn"><i class="fa-solid fa-plus-square"></i></button>
       </div>
     </div>
   </div>
@@ -244,10 +242,10 @@
   <!-- Modal hiển thị tất cả thể loại -->
   <div class="genre-modal" id="genreModal">
     <div class="modal-header">
-      <h3> 🎵 Khám phá thể loại </h3>
-      <span class="playlist-manager-close" id="closeGenreModal">&times;</span>
+      <h3><i class="fa-solid fa-layer-group"></i> Khám phá thể loại</h3>
+      <span class="playlist-manager-close" id="closeGenreModal"><i class="fa-solid fa-xmark"></i></span>
     </div>
-    <div class="genre-modal-grid" id="fullGenreList">
+    <div class="genre-modal-grid" id="genreGrid">
       <!-- Tất cả thể loại sẽ được liệt kê ở đây -->
     </div>
   </div>

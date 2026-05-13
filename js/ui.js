@@ -7,38 +7,17 @@
 function checkLoginStatus() {
   const username = localStorage.getItem('username');
   const userSection = document.getElementById('userSection');
+  if (!userSection) return;
   
-  if (username && username !== 'Người dùng') {
+  if (username && username !== 'nguoidung') {
     userSection.innerHTML = `
-      <div class="user-info-header">
-        <span class="username-display" id="profileTrigger" style="cursor:pointer">👋 ${username}</span>
-        <button class="logout-simple-btn" id="logoutBtn">Đăng xuất</button>
+      <div class="user-info-header" onclick="loadContent('profile')" style="cursor:pointer">
+        <i class="fa-solid fa-circle-user"></i>
+        <span class="username-display">${username}</span>
       </div>
     `;
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        if (confirm('Đăng xuất?')) {
-          localStorage.removeItem('username');
-          localStorage.removeItem('rememberedUser');
-          window.location.href = 'login.html';
-        }
-      });
-    }
-    const profileBtn = document.getElementById('profileTrigger');
-    if (profileBtn) {
-      profileBtn.addEventListener('click', () => {
-        loadContent('profile');
-      });
-    }
   } else {
-    userSection.innerHTML = `<button class="login-btn-header" id="loginHeaderBtn">🔑 Đăng nhập</button>`;
-    const loginBtn = document.getElementById('loginHeaderBtn');
-    if (loginBtn) {
-      loginBtn.addEventListener('click', () => {
-        window.location.href = 'login.html';
-      });
-    }
+    userSection.innerHTML = `<button class="login-btn" onclick="location.href='login.html'"><i class="fa-solid fa-key"></i> Đăng nhập</button>`;
   }
 }
 
@@ -88,15 +67,15 @@ function renderHome(genre = null) {
 
   if (activeGenre !== 'all') {
     songs = songs.filter(s => s.genre === activeGenre);
-    if (title) title.textContent = `🔥 Top ${activeGenre.toUpperCase()}`;
+    if (title) title.innerHTML = `<i class="fa-solid fa-fire"></i> Top ${activeGenre.toUpperCase()}`;
     if (heroTitle) heroTitle.textContent = `Top ${activeGenre.toUpperCase()} Tuần Này`;
   } else {
     songs = songs.sort((a, b) => (a.rank || 99) - (b.rank || 99)).slice(0, 10);
-    if (title) title.textContent = '🔥 Top 10 Thịnh Hành';
+    if (title) title.innerHTML = '<i class="fa-solid fa-fire"></i> Top 10 Thịnh Hành';
     if (heroTitle) heroTitle.textContent = 'Top 10 Thịnh Hành';
   }
 
-  if (heroDesc) heroDesc.textContent = `Khám phá ngay ${songs.length} bài hát đang dẫn đầu bảng xếp hạng trên SoundWave.`;
+  if (heroDesc) heroDesc.innerHTML = `<i class="fa-solid fa-music"></i> Khám phá ngay ${songs.length} bài hát đang dẫn đầu bảng xếp hạng trên SoundWave.`;
 
   // Gắn sự kiện cho các nút ở Banner
   const playBtn = document.getElementById('heroPlayBtn');
@@ -147,15 +126,17 @@ function renderHome(genre = null) {
   }
 
   el.innerHTML = songs.map((s, i) => {
-    const thumb = s.image ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : '🎵';
+    const isLikedSong = isLiked(s);
+    const likeIconClass = isLikedSong ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    const thumb = s.image ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` : '<i class="fa-solid fa-music"></i>';
     return `
     <div class="song-item" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}'>
       <div class="song-rank${i<3?' top':''}">${i + 1}</div>
-      <div class="song-thumb" style="background:${s.bg}">${thumb}<div class="song-play-overlay">▶</div></div>
+      <div class="song-thumb" style="background:${s.bg}">${thumb}<div class="song-play-overlay"><i class="fa-solid fa-play"></i></div></div>
       <div class="song-info"><div class="song-name">${s.name}</div><div class="song-artist">${s.artist}</div></div>
       <div class="song-meta">
-        <span class="add-to-playlist-btn" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 8px">➕</span>
-        <span class="like-song-btn ${isLiked(s)?'liked':''}" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 4px">${isLiked(s)?'❤️':'🤍'}</span>
+        <span class="add-to-playlist-btn" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 8px"><i class="fa-solid fa-plus-square"></i></span>
+        <span class="like-song-btn ${isLikedSong?'liked':''}" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 4px"><i class="${likeIconClass}"></i></span>
       </div>
     </div>`;
   }).join('');
@@ -190,7 +171,7 @@ function renderHome(genre = null) {
     const hist = JSON.parse(localStorage.getItem('listenHistory')) || [];
     histList.innerHTML = hist.length === 0 ? '<div style="padding:1rem;color:var(--text3)">Chưa có lịch sử</div>' : hist.slice(0, 5).map(s => `
       <div class="history-item" onclick='window.playSongFromMain(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
-        <div class="history-thumb" style="background:${s.bg}">${s.image?`<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'🎵'}</div>
+        <div class="history-thumb" style="background:${s.bg}">${s.image?`<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'<i class="fa-solid fa-music"></i>'}</div>
         <div class="history-info"><div class="history-name">${s.name}</div><div class="history-artist">${s.artist}</div></div>
       </div>`).join('');
   }
@@ -201,7 +182,7 @@ function renderHome(genre = null) {
     const albums = window.ALBUMS_DATA || [];
     albumGrid.innerHTML = albums.map(a => `
       <div class="album-card">
-        <div class="album-cover" style="background:${a.bg}">${a.image?`<img src="${a.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'💿'}</div>
+        <div class="album-cover" style="background:${a.bg}">${a.image?`<img src="${a.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'<i class="fa-solid fa-compact-disc"></i>'}</div>
         <div class="album-name">${a.name}</div>
         <div class="album-artist">${a.artist}</div>
       </div>`).join('');
@@ -230,28 +211,38 @@ function saveHistory(song) {
 }
 
 // ========== LIKE / UNLIKE ==========
-let likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
-
 function toggleLike(song) {
-  const idx = likedSongs.findIndex(s => s.name === song.name && s.artist === song.artist);
+  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  const idx = favorites.findIndex(s => s.id === song.id);
   if (idx === -1) {
-    likedSongs.unshift({ ...song });
-    showToast('❤️ Đã thêm vào yêu thích!');
+    favorites.unshift({ ...song });
+    showToast('Đã thêm vào yêu thích!');
   } else {
-    likedSongs.splice(idx, 1);
-    showToast('💔 Đã xóa khỏi yêu thích');
+    favorites.splice(idx, 1);
+    showToast('Đã xóa khỏi yêu thích');
   }
-  localStorage.setItem('likedSongs', JSON.stringify(likedSongs));
+  localStorage.setItem('favorites', JSON.stringify(favorites));
   updateLikeBtn();
 }
 
 function isLiked(song) {
-  return likedSongs.some(s => s.name === song.name && s.artist === song.artist);
+  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  return favorites.some(s => s.id === song.id);
 }
 
 function updateLikeBtn() {
-  const btn = document.getElementById('likeCurrentBtn');
-  if (btn && window.currentSongObj) btn.textContent = isLiked(window.currentSongObj) ? '❤️' : '🤍';
+  const isLikedSong = window.currentSongObj && isLiked(window.currentSongObj);
+  const iconClass = isLikedSong ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+  const color = isLikedSong ? 'var(--primary)' : 'white';
+  
+  const ids = ['likeCurrentBtn', 'npmLikeBtn'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerHTML = `<i class="${iconClass}"></i>`;
+      el.style.color = color;
+    }
+  });
 }
 
 // ========== SEARCH ==========
@@ -264,15 +255,15 @@ function handleSearch(query) {
   const mc = document.getElementById('mainContent');
   if (!mc) return;
   if (songs.length === 0) {
-    mc.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text2)"><div style="font-size:3rem">🔍</div><p>Không tìm thấy kết quả cho "${query}"</p></div>`;
+    mc.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text2)"><div style="font-size:3rem"><i class="fa-solid fa-magnifying-glass"></i></div><p>Không tìm thấy kết quả cho "${query}"</p></div>`;
     return;
   }
-  mc.innerHTML = `<div class="section-header"><div class="section-title">🔍 Kết quả cho "${query}"</div></div><div class="top-songs" id="searchResults"></div>`;
+  mc.innerHTML = `<div class="section-header"><div class="section-title"><i class="fa-solid fa-magnifying-glass"></i> Kết quả cho "${query}"</div></div><div class="top-songs" id="searchResults"></div>`;
   const el = document.getElementById('searchResults');
   el.innerHTML = songs.map((s, i) => `
     <div class="song-item" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}'>
       <div class="song-rank">#${i + 1}</div>
-      <div class="song-thumb" style="background:${s.bg}">${s.image?`<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'🎵'}<div class="song-play-overlay">▶</div></div>
+      <div class="song-thumb" style="background:${s.bg}">${s.image?`<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'<i class="fa-solid fa-music"></i>'}<div class="song-play-overlay"><i class="fa-solid fa-play"></i></div></div>
       <div class="song-info"><div class="song-name">${s.name}</div><div class="song-artist">${s.artist}</div></div>
       <div class="song-meta"><span class="song-plays">${s.plays}</span><span class="song-duration">${s.dur}</span></div>
     </div>`).join('');
@@ -283,37 +274,36 @@ function handleSearch(query) {
 
 // ========== THỂ LOẠI MỞ RỘNG ==========
 const ALL_GENRES = [
-  { id: 'all', name: 'Tất cả', emoji: '🏠' },
-  { id: 'vpop', name: 'V-Pop', emoji: '🎤' },
-  { id: 'pop', name: 'Pop', emoji: '🎸' },
-  { id: 'chill', name: 'Chill', emoji: '🌿' },
-  { id: 'rock', name: 'Rock', emoji: '🤘' },
-  { id: 'ballad', name: 'Ballad', emoji: '💙' },
-  { id: 'hiphop', name: 'Hip-hop', emoji: '🕶️' },
-  { id: 'edm', name: 'EDM', emoji: '💥' },
-  { id: 'jazz', name: 'Jazz', emoji: '🎷' },
-  { id: 'lofi', name: 'Lofi', emoji: '☕' },
-  { id: 'remix', name: 'Remix', emoji: '⚡' },
-  { id: 'indie', name: 'Indie', emoji: '🌻' },
-  { id: 'rap', name: 'Rap', emoji: '🎙️' },
-  { id: 'jpop', name: 'J-Pop', emoji: '🌸' },
-  { id: 'kpop', name: 'K-Pop', emoji: '💎' }
+  { id: 'all', name: 'Tất cả', icon: 'fa-house' },
+  { id: 'vpop', name: 'V-Pop', icon: 'fa-microphone' },
+  { id: 'pop', name: 'Pop', icon: 'fa-star' },
+  { id: 'chill', name: 'Chill', icon: 'fa-leaf' },
+  { id: 'rock', name: 'Rock', icon: 'fa-guitar' },
+  { id: 'ballad', name: 'Ballad', icon: 'fa-heart' },
+  { id: 'hiphop', name: 'Hip-hop', icon: 'fa-glasses' },
+  { id: 'edm', name: 'EDM', icon: 'fa-bolt' },
+  { id: 'jazz', name: 'Jazz', icon: 'fa-record-vinyl' },
+  { id: 'lofi', name: 'Lofi', icon: 'fa-mug-hot' },
+  { id: 'remix', name: 'Remix', icon: 'fa-bolt-lightning' },
+  { id: 'indie', name: 'Indie', icon: 'fa-sun' },
+  { id: 'rap', name: 'Rap', icon: 'fa-microphone-lines' },
+  { id: 'jpop', name: 'J-Pop', icon: 'fa-fan' },
+  { id: 'kpop', name: 'K-Pop', icon: 'fa-gem' }
 ];
 
 function openGenreModal() {
   const modal = document.getElementById('genreModal');
-  const overlay = document.getElementById('modalOverlay');
-  const list = document.getElementById('fullGenreList');
-  if (!modal || !list) return;
-
-  list.innerHTML = ALL_GENRES.map(g => `
-    <div class="genre-modal-item" data-genre="${g.id}">
-      <span class="genre-modal-emoji">${g.emoji}</span>
-      <span>${g.name}</span>
+  const grid = document.getElementById('genreGrid');
+  if (!modal || !grid) return;
+  
+  grid.innerHTML = ALL_GENRES.map(g => `
+    <div class="genre-card" data-genre="${g.id}">
+      <div class="genre-icon"><i class="fa-solid ${g.icon}"></i></div>
+      <div class="genre-name">${g.name}</div>
     </div>
   `).join('');
 
-  list.querySelectorAll('.genre-modal-item').forEach(item => {
+  grid.querySelectorAll('.genre-card').forEach(item => {
     item.addEventListener('click', () => {
       const g = item.dataset.genre;
       window._genreFilter = g;
@@ -326,7 +316,7 @@ function openGenreModal() {
   });
 
   modal.classList.add('show');
-  if (overlay) overlay.classList.add('show');
+  document.getElementById('modalOverlay')?.classList.add('show');
 }
 
 function closeGenreModal() {

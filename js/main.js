@@ -40,6 +40,24 @@ function init() {
     if (window.currentSongObj) window.toggleLike(window.currentSongObj); 
   });
 
+  // Nút Thêm vào playlist trong bảng điều khiển phải
+  const addNpBtn = document.getElementById('addToPlaylistNpBtn');
+  if (addNpBtn) addNpBtn.addEventListener('click', () => {
+    if (window.currentSongObj && window.showAddToPlaylistModal) {
+      window.showAddToPlaylistModal(window.currentSongObj);
+    }
+  });
+
+  // Nút Like và Add trong Mobile Now Playing
+  document.getElementById('npmLikeBtn')?.addEventListener('click', () => {
+    if (window.currentSongObj) window.toggleLike(window.currentSongObj);
+  });
+  document.getElementById('npmAddBtn')?.addEventListener('click', () => {
+    if (window.currentSongObj && window.showAddToPlaylistModal) {
+      window.showAddToPlaylistModal(window.currentSongObj);
+    }
+  });
+
   // Thanh tiến trình
   const progressBar = document.getElementById('progressBar');
   if (progressBar) {

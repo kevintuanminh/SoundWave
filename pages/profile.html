@@ -1,6 +1,6 @@
 <div>
   <div class="section-header">
-    <div class="section-title">👤 Hồ sơ cá nhân</div>
+    <div class="section-title"><i class="fa-solid fa-circle-user"></i> Hồ sơ cá nhân</div>
   </div>
 
   <div class="profile-wrap" id="profileWrap">
@@ -13,7 +13,7 @@
   const username = localStorage.getItem('username') || 'Khách';
   const users = JSON.parse(localStorage.getItem('users')) || [];
   const user = users.find(u => u.username === username) || { username, email: 'Chưa đăng nhập' };
-  const liked = JSON.parse(localStorage.getItem('likedSongs')) || [];
+  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
   const playlists = JSON.parse(localStorage.getItem('userPlaylists')) || [];
   const history = JSON.parse(localStorage.getItem('listenHistory')) || [];
   const isLoggedIn = localStorage.getItem('username') && localStorage.getItem('username') !== 'Người dùng';
@@ -29,13 +29,13 @@
 
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-num">${history.length}</div><div class="stat-label">Bài đã nghe</div></div>
-      <div class="stat-card"><div class="stat-num">${liked.length}</div><div class="stat-label">Yêu thích</div></div>
+      <div class="stat-card"><div class="stat-num">${favorites.length}</div><div class="stat-label">Yêu thích</div></div>
       <div class="stat-card"><div class="stat-num">${playlists.length}</div><div class="stat-label">Playlist</div></div>
     </div>
 
     ${isLoggedIn ? `
     <div class="profile-section">
-      <div class="profile-section-title">🔒 Đổi mật khẩu</div>
+      <div class="profile-section-title"><i class="fa-solid fa-lock"></i> Đổi mật khẩu</div>
       <div class="form-group" style="max-width:360px">
         <label style="font-size:0.85rem;color:var(--text2);display:block;margin-bottom:6px">Mật khẩu mới</label>
         <input type="password" id="newPwdInput" placeholder="Nhập mật khẩu mới" style="width:100%;padding:0.7rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem;margin-bottom:10px">
@@ -46,12 +46,11 @@
     </div>
 
     <div class="profile-section">
-      <div class="profile-section-title">⚠️ Vùng nguy hiểm</div>
-      <button id="clearDataBtn" style="padding:0.6rem 1.2rem;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#f87171;cursor:pointer;margin-right:8px">🗑️ Xóa lịch sử nghe</button>
-      <button id="logoutProfileBtn" style="padding:0.6rem 1.2rem;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#f87171;cursor:pointer">🚪 Đăng xuất</button>
+      <div class="profile-section-title"><i class="fa-solid fa-triangle-exclamation"></i> Vùng nguy hiểm</div>
+      <button id="logoutProfileBtn" style="padding:0.6rem 1.2rem;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#f87171;cursor:pointer"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
     </div>` : `
     <div style="text-align:center;padding:2rem">
-      <button onclick="window.location.href='login.html'" style="padding:0.8rem 2rem;background:linear-gradient(135deg,#c084fc,#818cf8);border:none;border-radius:30px;color:#fff;font-weight:600;cursor:pointer;font-size:1rem">🔑 Đăng nhập để xem đầy đủ</button>
+      <button onclick="window.location.href='login.html'" style="padding:0.8rem 2rem;background:linear-gradient(135deg,#c084fc,#818cf8);border:none;border-radius:30px;color:#fff;font-weight:600;cursor:pointer;font-size:1rem"><i class="fa-solid fa-key"></i> Đăng nhập để xem đầy đủ</button>
     </div>`}
   `;
 
@@ -63,10 +62,7 @@
     if (np !== cp) { if(window.showToast) window.showToast('Mật khẩu không khớp!','error'); return; }
     const us = JSON.parse(localStorage.getItem('users')) || [];
     const u = us.find(u => u.username === username);
-    if (u) { u.password = np; localStorage.setItem('users', JSON.stringify(us)); if(window.showToast) window.showToast('✅ Đổi mật khẩu thành công!'); }
-  });
-  document.getElementById('clearDataBtn')?.addEventListener('click', () => {
-    if (confirm('Xóa toàn bộ lịch sử nghe?')) { localStorage.removeItem('listenHistory'); if(window.showToast) window.showToast('🗑️ Đã xóa lịch sử'); }
+    if (u) { u.password = np; localStorage.setItem('users', JSON.stringify(us)); if(window.showToast) window.showToast('Đổi mật khẩu thành công!'); }
   });
   document.getElementById('logoutProfileBtn')?.addEventListener('click', () => {
     if (confirm('Đăng xuất?')) { localStorage.removeItem('username'); window.location.href='login.html'; }

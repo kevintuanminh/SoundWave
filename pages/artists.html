@@ -1,6 +1,6 @@
 <div>
   <div class="section-header">
-    <div class="section-title">🎤 Nghệ sĩ nổi bật</div>
+    <div class="section-title"><i class="fa-solid fa-microphone-lines"></i> Nghệ sĩ nổi bật</div>
   </div>
 
   <div class="artist-grid" id="artistGrid"></div>
@@ -8,7 +8,7 @@
   <div id="artistSongs" style="display:none">
     <div class="section-header" style="margin-top:2rem">
       <div class="section-title" id="artistSongsTitle">Bài hát</div>
-      <a href="#" class="see-all" id="backToArtists">← Quay lại</a>
+      <a href="#" class="see-all" id="backToArtists"><i class="fa-solid fa-arrow-left"></i> Quay lại</a>
     </div>
     <div class="top-songs" id="artistSongsList"></div>
   </div>
@@ -28,7 +28,7 @@
     el.innerHTML = artists.map(a => {
       const avatarContent = a.image 
         ? `<img src="${a.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-        : '👤';
+        : '<i class="fa-solid fa-user"></i>';
       return `
       <div class="artist-card" data-artist="${a.name}">
         <div class="artist-avatar" style="background:${a.bg}">${avatarContent}</div>
@@ -49,7 +49,7 @@
     const list = document.getElementById('artistSongsList');
     if (el) el.style.display = 'none';
     if (songsEl) songsEl.style.display = 'block';
-    if (title) title.textContent = '🎤 ' + artistName;
+    if (title) title.innerHTML = `<i class="fa-solid fa-microphone"></i> ${artistName}`;
 
     const songs = allSongs.filter(s => s.artist.includes(artistName.split(' ')[0]));
     if (!list) return;
@@ -60,11 +60,11 @@
     list.innerHTML = songs.map((s, i) => {
       const thumbContent = s.image 
         ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-        : '🎵';
+        : '<i class="fa-solid fa-music"></i>';
       return `
-      <div class="song-item" data-song='${JSON.stringify(s)}'>
+      <div class="song-item" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}'>
         <div class="song-rank">${i + 1}</div>
-        <div class="song-thumb" style="background:${s.bg}">${thumbContent}<div class="song-play-overlay">▶</div></div>
+        <div class="song-thumb" style="background:${s.bg}">${thumbContent}<div class="song-play-overlay"><i class="fa-solid fa-play"></i></div></div>
         <div class="song-info"><div class="song-name">${s.name}</div><div class="song-artist">${s.artist}</div></div>
         <div class="song-meta"><span class="song-plays">${s.plays}</span><span class="song-duration">${s.dur}</span></div>
       </div>`;

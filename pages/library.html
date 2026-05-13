@@ -1,7 +1,7 @@
 <div>
   <div class="section-header">
-    <div class="section-title">📚 Thư viện của tôi</div>
-    <button class="add-btn" onclick="if(window.showCreatePlaylistModal) window.showCreatePlaylistModal()" style="font-size: 1.5rem; background:none; border:none; cursor:pointer;" title="Tạo playlist mới">➕</button>
+    <div class="section-title"><i class="fa-solid fa-book-bookmark"></i> Thư viện của tôi</div>
+    <button class="add-btn" onclick="if(window.showCreatePlaylistModal) window.showCreatePlaylistModal()" style="font-size: 1.5rem; background:none; border:none; cursor:pointer; color:var(--accent)" title="Tạo playlist mới"><i class="fa-solid fa-plus-square"></i></button>
   </div>
 
   <!-- Playlists Section -->
@@ -22,15 +22,15 @@
       if (playlists.length === 0) {
         pList.innerHTML = `
           <div style="text-align:center;padding:3rem 1rem">
-            <div style="font-size:3rem;margin-bottom:1rem">📁</div>
+            <div style="font-size:3rem;margin-bottom:1rem;color:var(--text3)"><i class="fa-solid fa-folder-open"></i></div>
             <div style="color:var(--text2);margin-bottom:1.5rem">Bạn chưa tạo playlist nào</div>
-            <button class="btn-primary" onclick="if(window.showCreatePlaylistModal) window.showCreatePlaylistModal()">+ Tạo playlist ngay</button>
+            <button class="btn-primary" onclick="if(window.showCreatePlaylistModal) window.showCreatePlaylistModal()"><i class="fa-solid fa-plus"></i> Tạo playlist ngay</button>
           </div>
         `;
       } else {
         pList.innerHTML = playlists.map(p => `
-          <div class="playlist-item" onclick="if(window.showPlaylistDetail) window.showPlaylistDetail('${p.id}')">
-            <div class="playlist-thumb" style="background:var(--surface2)">📂</div>
+          <div class="playlist-item" onclick="if(window.showPlaylistDetail) window.showPlaylistDetail(${p.id})">
+            <div class="playlist-thumb" style="background:var(--surface2)"><i class="fa-solid fa-list-ul"></i></div>
             <div class="playlist-info">
               <div class="playlist-name">${p.name}</div>
               <div class="playlist-count">${p.songs.length} bài hát</div>

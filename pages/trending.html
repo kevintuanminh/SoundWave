@@ -1,6 +1,6 @@
 <div>
   <div class="section-header">
-    <div class="section-title" id="trendingTitle">🔥 Bảng xếp hạng Thịnh hành</div>
+    <div class="section-title" id="trendingTitle"><i class="fa-solid fa-fire"></i> Bảng xếp hạng Thịnh hành</div>
   </div>
 
   <div class="top-songs-list">
@@ -21,10 +21,10 @@
   let songs = [...allSongs];
   if (activeGenre !== 'all') {
     songs = songs.filter(s => s.genre === activeGenre);
-    if (titleEl) titleEl.textContent = `🔥 Tất cả nhạc ${activeGenre.toUpperCase()}`;
+    if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-fire"></i> Tất cả nhạc ${activeGenre.toUpperCase()}`;
   } else {
     songs = songs.sort((a, b) => (a.rank || 99) - (b.rank || 99));
-    if (titleEl) titleEl.textContent = '🔥 Bảng xếp hạng Thịnh hành';
+    if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-fire"></i> Bảng xếp hạng Thịnh hành';
   }
 
   if (window.updateTrendingSongs) window.updateTrendingSongs(songs);
@@ -35,27 +35,29 @@
   }
 
   el.innerHTML = songs.map((s, i) => {
+    const isLiked = window.isLiked && window.isLiked(s);
+    const likeIcon = isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
     const thumbContent = s.image 
       ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-      : '🎵';
+      : '<i class="fa-solid fa-music"></i>';
     return `
     <div class="song-item" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}'>
       <div class="song-rank${i<3?' top':''}">${i + 1}</div>
-      <div class="song-thumb" style="background:${s.bg}">${thumbContent}<div class="song-play-overlay">▶</div></div>
+      <div class="song-thumb" style="background:${s.bg}">${thumbContent}<div class="song-play-overlay"><i class="fa-solid fa-play"></i></div></div>
       <div class="song-info">
         <div class="song-name">${s.name}</div>
         <div class="song-artist">${s.artist}</div>
       </div>
       <div class="song-meta">
-        <span class="add-to-playlist-btn" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 8px">➕</span>
-        <span class="like-song-btn ${window.isLiked&&window.isLiked(s)?'liked':''}" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 4px">${window.isLiked&&window.isLiked(s)?'❤️':'🤍'}</span>
+        <span class="add-to-playlist-btn" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 8px"><i class="fa-solid fa-plus-square"></i></span>
+        <span class="like-song-btn ${isLiked?'liked':''}" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}' style="cursor:pointer;margin:0 4px"><i class="${likeIcon}"></i></span>
       </div>
     </div>`;
   }).join('');
 
   el.querySelectorAll('.song-item').forEach(item => {
     item.addEventListener('click', e => {
-      if (e.target.classList.contains('add-to-playlist-btn') || e.target.classList.contains('like-song-btn')) return;
+      if (e.target.closest('.add-to-playlist-btn') || e.target.closest('.like-song-btn')) return;
       if (window.playSongFromMain) window.playSongFromMain(JSON.parse(item.dataset.song));
     });
   });
@@ -63,18 +65,19 @@
   el.querySelectorAll('.add-to-playlist-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      if (window.showAddToPlaylistModal) window.showAddToPlaylistModal(JSON.parse(btn.dataset.song));
+      if (window.showAddToPlaylistModal) window.showAddToPlaylistModal(JSON.parse(btn.closest('.add-to-playlist-btn').dataset.song));
     });
   });
 
   el.querySelectorAll('.like-song-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      const s = JSON.parse(btn.dataset.song);
+      const s = JSON.parse(btn.closest('.like-song-btn').dataset.song);
       if (window.toggleLike) {
         window.toggleLike(s);
-        btn.textContent = window.isLiked(s) ? '❤️' : '🤍';
-        btn.classList.toggle('liked');
+        const isNowLiked = window.isLiked(s);
+        btn.innerHTML = `<i class="${isNowLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>`;
+        btn.classList.toggle('liked', isNowLiked);
       }
     });
   });

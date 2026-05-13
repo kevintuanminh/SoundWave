@@ -1,0 +1,75 @@
+<div>
+  <div class="section-header">
+    <div class="section-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent)"></i> Lịch sử nghe</div>
+    <span id="historyCount" style="font-size:0.85rem;color:var(--text3)">0 bài</span>
+  </div>
+
+  <div id="noHistory" style="display:none;text-align:center;padding:4rem 2rem">
+    <div style="font-size:4rem;margin-bottom:1rem;color:var(--text3)"><i class="fa-solid fa-history"></i></div>
+    <div style="font-size:1.1rem;font-weight:600;margin-bottom:0.5rem">Lịch sử trống</div>
+    <div style="color:var(--text2);font-size:0.9rem">Bắt đầu nghe nhạc để lưu lại lịch sử tại đây</div>
+  </div>
+
+  <div class="top-songs" id="historyList"></div>
+  
+  <div style="margin-top:2rem;text-align:center">
+     <button id="clearHistoryBtn" class="btn-ghost" style="padding:0.5rem 1.5rem;font-size:0.85rem;border-radius:20px;display:none">Xóa tất cả lịch sử</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  function build() {
+    const history = JSON.parse(localStorage.getItem('listenHistory')) || [];
+    const el = document.getElementById('historyList');
+    const noEl = document.getElementById('noHistory');
+    const countEl = document.getElementById('historyCount');
+    const clearBtn = document.getElementById('clearHistoryBtn');
+    
+    if (!el) return;
+
+    if (countEl) countEl.textContent = history.length + ' bài';
+
+    if (history.length === 0) {
+      if (noEl) noEl.style.display = 'block';
+      if (clearBtn) clearBtn.style.display = 'none';
+      el.innerHTML = '';
+      return;
+    }
+    
+    if (noEl) noEl.style.display = 'none';
+    if (clearBtn) {
+        clearBtn.style.display = 'inline-block';
+        clearBtn.onclick = () => {
+            if (confirm('Xóa toàn bộ lịch sử nghe?')) {
+                localStorage.setItem('listenHistory', '[]');
+                build();
+            }
+        };
+    }
+
+    el.innerHTML = history.map((s, i) => {
+      const thumbContent = s.image 
+        ? `<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+        : '<i class="fa-solid fa-music"></i>';
+      return `
+      <div class="song-item" data-song='${JSON.stringify(s).replace(/'/g, "&apos;")}'>
+        <div class="song-rank">${i + 1}</div>
+        <div class="song-thumb" style="background:${s.bg || '#1a0a2e'}">${thumbContent}<div class="song-play-overlay"><i class="fa-solid fa-play"></i></div></div>
+        <div class="song-info"><div class="song-name">${window.escapeHtml(s.name)}</div><div class="song-artist">${window.escapeHtml(s.artist)}</div></div>
+        <div class="song-meta">
+          <span class="song-duration">${s.dur || ''}</span>
+          <span class="history-play-btn" style="cursor:pointer;margin-left:12px;font-size:1.1rem;color:var(--accent)" title="Phát"><i class="fa-solid fa-play"></i></span>
+        </div>
+      </div>`;
+    }).join('');
+
+    el.querySelectorAll('.song-item').forEach(item => {
+      item.addEventListener('click', e => {
+        if (window.playSongFromMain) window.playSongFromMain(JSON.parse(item.dataset.song));
+      });
+    });
+  }
+  build();
+})();
+</script>

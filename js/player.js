@@ -4,7 +4,7 @@
  */
 
 // ========== BIẾN TOÀN CỤC PLAYER ==========
-window.currentSong = { name: "Chưa chọn bài hát", artist: "Mời bạn chọn nhạc", duration: 0, emoji: "🎵" };
+window.currentSong = { name: "Chưa chọn bài hát", artist: "Mời bạn chọn nhạc", duration: 0 };
 window.currentTime = 0;
 window.isPlaying = false;
 window.queueList = [];
@@ -45,23 +45,18 @@ function updatePlayerUI() {
   updateInfo('bpArtist', window.currentSong.artist);
   
   // Covers
-  const covers = [
-    { id: 'npCover', icon: '🎵' },
-    { id: 'bpThumb', icon: '🎵' },
-    { id: 'npmCover', icon: '🎵' }
-  ];
+  const covers = ['npCover', 'bpThumb', 'npmCover'];
   
-  covers.forEach(c => {
-    const el = document.getElementById(c.id);
+  covers.forEach(id => {
+    const el = document.getElementById(id);
     if (el) {
       if (window.currentSongObj && window.currentSongObj.image) {
         const currentImg = el.querySelector('img');
-        // Chỉ cập nhật nếu chưa có ảnh HOẶC ảnh hiện tại khác ảnh bài hát mới
         if (!currentImg || currentImg.src !== window.currentSongObj.image) {
           el.innerHTML = `<img src="${window.currentSongObj.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
         }
       } else {
-        el.innerHTML = c.icon;
+        el.innerHTML = '<i class="fa-solid fa-music"></i>';
       }
       // Animation
       if (window.isPlaying) {
@@ -77,7 +72,7 @@ function updatePlayerUI() {
   const playBtns = ['playPauseBtn', 'bpPlayPauseBtn', 'npmPlayPauseBtn'];
   playBtns.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = window.isPlaying ? '⏸' : '▶';
+    if (el) el.innerHTML = window.isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
   });
 }
 
@@ -325,22 +320,32 @@ function playPrevSong() {
 function toggleShuffle() {
   window.shuffleMode = !window.shuffleMode;
   const btn = document.getElementById('shuffleCtrlBtn');
-  if (btn) {
-    btn.style.color = window.shuffleMode ? 'var(--accent)' : '';
-    btn.style.textShadow = window.shuffleMode ? '0 0 8px var(--accent)' : '';
-  }
-  window.showToast(window.shuffleMode ? '🔀 Shuffle bật' : '🔀 Shuffle tắt');
+  const npmBtn = document.getElementById('npmShuffleBtn');
+  const color = window.shuffleMode ? 'var(--accent)' : '';
+  
+  [btn, npmBtn].forEach(b => {
+    if (b) {
+      b.style.color = color;
+      if (window.shuffleMode) b.classList.add('active');
+      else b.classList.remove('active');
+    }
+  });
+  window.showToast(window.shuffleMode ? 'Xáo trộn: Bật' : 'Xáo trộn: Tắt');
 }
 
 function cycleRepeat() {
   window.repeatMode = (window.repeatMode + 1) % 3;
-  const btn = document.getElementById('repeatCtrlBtn');
-  const labels = ['🔁', '🔁', '🔂'];
-  const msgs = ['🔁 Repeat tắt', '🔁 Repeat tất cả', '🔂 Repeat 1 bài'];
-  if (btn) {
-    btn.textContent = labels[window.repeatMode];
-    btn.style.color = window.repeatMode > 0 ? 'var(--accent)' : '';
-  }
+  const btns = ['repeatCtrlBtn', 'npmRepeatBtn'];
+  const icons = ['fa-repeat', 'fa-repeat', 'fa-repeat-1'];
+  const msgs = ['Lặp lại: Tắt', 'Lặp lại: Tất cả', 'Lặp lại: 1 bài'];
+  
+  btns.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerHTML = `<i class="fa-solid ${icons[window.repeatMode]}"></i>`;
+      el.style.color = window.repeatMode > 0 ? 'var(--accent)' : '';
+    }
+  });
   window.showToast(msgs[window.repeatMode]);
 }
 
@@ -381,7 +386,7 @@ function initKeyboard() {
       const f = document.getElementById('volumeFill');
       if (f) f.style.width = window.currentVolume + '%';
       if (window.soundcloudWidget && typeof SC !== 'undefined') window.soundcloudWidget.setVolume(window.currentVolume);
-      window.showToast(window.currentVolume === 0 ? '🔇 Tắt tiếng' : '🔊 Bật tiếng');
+      window.showToast(window.currentVolume === 0 ? 'Đã tắt tiếng' : 'Đã bật tiếng');
     }
     if (e.code === 'KeyL') { if (window.currentSongObj) window.toggleLike(window.currentSongObj); }
     if (e.code === 'KeyS') toggleShuffle();
