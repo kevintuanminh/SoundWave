@@ -16,7 +16,8 @@
 <script>
 (function() {
   function build() {
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const key = window.getStorageKey ? window.getStorageKey('favorites') : 'favorites_guest';
+    const favorites = JSON.parse(localStorage.getItem(key)) || [];
     const el = document.getElementById('favoritesList');
     const noEl = document.getElementById('noLiked');
     const countEl = document.getElementById('likedCount');

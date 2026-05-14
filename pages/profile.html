@@ -13,9 +13,14 @@
   const username = localStorage.getItem('username') || 'Khách';
   const users = JSON.parse(localStorage.getItem('users')) || [];
   const user = users.find(u => u.username === username) || { username, email: 'Chưa đăng nhập' };
-  const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-  const playlists = JSON.parse(localStorage.getItem('userPlaylists')) || [];
-  const history = JSON.parse(localStorage.getItem('listenHistory')) || [];
+  
+  const favKey = window.getStorageKey ? window.getStorageKey('favorites') : 'favorites_guest';
+  const playlistKey = window.getStorageKey ? window.getStorageKey('userPlaylists') : 'userPlaylists_guest';
+  const histKey = window.getStorageKey ? window.getStorageKey('listenHistory') : 'listenHistory_guest';
+
+  const favorites = JSON.parse(localStorage.getItem(favKey)) || [];
+  const playlists = JSON.parse(localStorage.getItem(playlistKey)) || [];
+  const history = JSON.parse(localStorage.getItem(histKey)) || [];
   const isLoggedIn = localStorage.getItem('username') && localStorage.getItem('username') !== 'Người dùng';
 
   document.getElementById('profileWrap').innerHTML = `
@@ -35,14 +40,8 @@
 
     ${isLoggedIn ? `
     <div class="profile-section">
-      <div class="profile-section-title"><i class="fa-solid fa-lock"></i> Đổi mật khẩu</div>
-      <div class="form-group" style="max-width:360px">
-        <label style="font-size:0.85rem;color:var(--text2);display:block;margin-bottom:6px">Mật khẩu mới</label>
-        <input type="password" id="newPwdInput" placeholder="Nhập mật khẩu mới" style="width:100%;padding:0.7rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem;margin-bottom:10px">
-        <label style="font-size:0.85rem;color:var(--text2);display:block;margin-bottom:6px">Xác nhận mật khẩu</label>
-        <input type="password" id="confirmPwdInput" placeholder="Nhập lại mật khẩu" style="width:100%;padding:0.7rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem;margin-bottom:12px">
-        <button id="changePwdBtn" style="padding:0.7rem 1.5rem;background:linear-gradient(135deg,#c084fc,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer">Đổi mật khẩu</button>
-      </div>
+      <div class="profile-section-title"><i class="fa-solid fa-lock"></i> Bảo mật</div>
+      <button id="openChangePwdBtn" style="padding:0.7rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-weight:600;cursor:pointer;transition:all 0.2s"><i class="fa-solid fa-key"></i> Đổi mật khẩu</button>
     </div>
 
     <div class="profile-section">
@@ -54,15 +53,9 @@
     </div>`}
   `;
 
-  // Đổi mật khẩu
-  document.getElementById('changePwdBtn')?.addEventListener('click', () => {
-    const np = document.getElementById('newPwdInput')?.value;
-    const cp = document.getElementById('confirmPwdInput')?.value;
-    if (!np || np.length < 6) { if(window.showToast) window.showToast('Mật khẩu phải ít nhất 6 ký tự!','error'); return; }
-    if (np !== cp) { if(window.showToast) window.showToast('Mật khẩu không khớp!','error'); return; }
-    const us = JSON.parse(localStorage.getItem('users')) || [];
-    const u = us.find(u => u.username === username);
-    if (u) { u.password = np; localStorage.setItem('users', JSON.stringify(us)); if(window.showToast) window.showToast('Đổi mật khẩu thành công!'); }
+  // Mở modal đổi mật khẩu
+  document.getElementById('openChangePwdBtn')?.addEventListener('click', () => {
+    if (window.openChangePwdModal) window.openChangePwdModal();
   });
   document.getElementById('logoutProfileBtn')?.addEventListener('click', () => {
     if (confirm('Đăng xuất?')) { localStorage.removeItem('username'); window.location.href='login.html'; }

@@ -250,6 +250,29 @@
     </div>
   </div>
 
+  <!-- Modal đổi mật khẩu -->
+  <div class="genre-modal" id="changePasswordModal" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3><i class="fa-solid fa-key"></i> Đổi mật khẩu</h3>
+      <span class="playlist-manager-close" id="closeChangePwdModal"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="modal-body" style="padding: 1.5rem;">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text2)">Mật khẩu hiện tại</label>
+        <input type="password" id="oldPwdInput" placeholder="Nhập mật khẩu cũ" style="width:100%;padding:0.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text2)">Mật khẩu mới</label>
+        <input type="password" id="newPwdInput" placeholder="Ít nhất 6 ký tự" style="width:100%;padding:0.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem">
+      </div>
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text2)">Xác nhận mật khẩu mới</label>
+        <input type="password" id="confirmPwdInput" placeholder="Nhập lại mật khẩu mới" style="width:100%;padding:0.75rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:0.9rem">
+      </div>
+      <button id="confirmChangePwdBtn" style="width:100%;padding:0.8rem;background:linear-gradient(135deg,#c084fc,#818cf8);border:none;border-radius:10px;color:#fff;font-weight:600;cursor:pointer">Xác nhận thay đổi</button>
+    </div>
+  </div>
+
   <script src="js/ui.js"></script>
   <script src="js/player.js"></script>
   <script src="js/playlist.js"></script>

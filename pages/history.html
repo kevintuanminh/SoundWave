@@ -20,7 +20,8 @@
 <script>
 (function() {
   function build() {
-    const history = JSON.parse(localStorage.getItem('listenHistory')) || [];
+    const key = window.getStorageKey ? window.getStorageKey('listenHistory') : 'listenHistory_guest';
+    const history = JSON.parse(localStorage.getItem(key)) || [];
     const el = document.getElementById('historyList');
     const noEl = document.getElementById('noHistory');
     const countEl = document.getElementById('historyCount');
@@ -42,7 +43,7 @@
         clearBtn.style.display = 'inline-block';
         clearBtn.onclick = () => {
             if (confirm('Xóa toàn bộ lịch sử nghe?')) {
-                localStorage.setItem('listenHistory', '[]');
+                localStorage.setItem(key, '[]');
                 build();
             }
         };

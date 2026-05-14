@@ -3,6 +3,12 @@
  * Chứa các hàm quản lý giao diện, thông báo, yêu thích và tìm kiếm.
  */
 
+// ========== HELPER LƯU TRỮ RIÊNG BIỆT ==========
+function getStorageKey(baseKey) {
+  const username = localStorage.getItem('username') || 'guest';
+  return `${baseKey}_${username}`;
+}
+
 // ========== KIỂM TRA ĐĂNG NHẬP ==========
 function checkLoginStatus() {
   const username = localStorage.getItem('username');
@@ -181,11 +187,18 @@ function renderHome(genre = null) {
   if (albumGrid) {
     const albums = window.ALBUMS_DATA || [];
     albumGrid.innerHTML = albums.map(a => `
-      <div class="album-card">
+      <div class="album-card" data-album-id="${a.id}">
         <div class="album-cover" style="background:${a.bg}">${a.image?`<img src="${a.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'<i class="fa-solid fa-compact-disc"></i>'}</div>
         <div class="album-name">${a.name}</div>
         <div class="album-artist">${a.artist}</div>
       </div>`).join('');
+
+    albumGrid.querySelectorAll('.album-card').forEach(card => {
+      card.onclick = () => {
+        window._albumFilter = parseInt(card.dataset.albumId);
+        loadContent('trending');
+      };
+    });
   }
 }
 
@@ -203,16 +216,18 @@ function showToast(msg, type = 'success') {
 
 // ========== LỊCH SỬ NGHE ==========
 function saveHistory(song) {
-  let hist = JSON.parse(localStorage.getItem('listenHistory')) || [];
+  const key = getStorageKey('listenHistory');
+  let hist = JSON.parse(localStorage.getItem(key)) || [];
   hist = hist.filter(h => h.name !== song.name || h.artist !== song.artist);
   hist.unshift({ ...song, time: Date.now() });
   if (hist.length > 30) hist = hist.slice(0, 30);
-  localStorage.setItem('listenHistory', JSON.stringify(hist));
+  localStorage.setItem(key, JSON.stringify(hist));
 }
 
 // ========== LIKE / UNLIKE ==========
 function toggleLike(song) {
-  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  const key = getStorageKey('favorites');
+  const favorites = JSON.parse(localStorage.getItem(key) || '[]');
   const idx = favorites.findIndex(s => s.id === song.id);
   if (idx === -1) {
     favorites.unshift({ ...song });
@@ -221,19 +236,20 @@ function toggleLike(song) {
     favorites.splice(idx, 1);
     showToast('Đã xóa khỏi yêu thích');
   }
-  localStorage.setItem('favorites', JSON.stringify(favorites));
+  localStorage.setItem(key, JSON.stringify(favorites));
   updateLikeBtn();
 }
 
 function isLiked(song) {
-  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  const key = getStorageKey('favorites');
+  const favorites = JSON.parse(localStorage.getItem(key) || '[]');
   return favorites.some(s => s.id === song.id);
 }
 
 function updateLikeBtn() {
   const isLikedSong = window.currentSongObj && isLiked(window.currentSongObj);
   const iconClass = isLikedSong ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-  const color = isLikedSong ? 'var(--primary)' : 'white';
+  const color = isLikedSong ? 'var(--accent)' : 'white';
   
   const ids = ['likeCurrentBtn', 'npmLikeBtn'];
   ids.forEach(id => {
@@ -324,6 +340,22 @@ function closeGenreModal() {
   document.getElementById('modalOverlay')?.classList.remove('show');
 }
 
+function openChangePwdModal() {
+  const modal = document.getElementById('changePasswordModal');
+  if (!modal) return;
+  modal.classList.add('show');
+  document.getElementById('modalOverlay')?.classList.add('show');
+  // Reset inputs
+  document.getElementById('oldPwdInput').value = '';
+  document.getElementById('newPwdInput').value = '';
+  document.getElementById('confirmPwdInput').value = '';
+}
+
+function closeChangePwdModal() {
+  document.getElementById('changePasswordModal')?.classList.remove('show');
+  document.getElementById('modalOverlay')?.classList.remove('show');
+}
+
 // ========== HÀM PHỤ TRỢ ==========
 function formatTime(seconds) {
   if (!seconds || isNaN(seconds)) return '0:00';
@@ -356,6 +388,7 @@ function initMenu() {
       const tab = btn.dataset.tab;
       if (tab === 'home' || tab === 'trending') {
         window._genreFilter = 'all';
+        window._albumFilter = null; // Reset album filter
         document.querySelectorAll('.genre-tag').forEach(t => t.classList.remove('active'));
       }
       loadContent(tab);
@@ -375,7 +408,10 @@ window.updateLikeBtn = updateLikeBtn;
 window.handleSearch = handleSearch;
 window.formatTime = formatTime;
 window.escapeHtml = escapeHtml;
+window.getStorageKey = getStorageKey;
 window.initMenu = initMenu;
 window.openGenreModal = openGenreModal;
 window.closeGenreModal = closeGenreModal;
+window.openChangePwdModal = openChangePwdModal;
+window.closeChangePwdModal = closeChangePwdModal;
 window.renderHome = renderHome;

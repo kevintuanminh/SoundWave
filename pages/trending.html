@@ -19,7 +19,15 @@
   if (!el) return;
 
   let songs = [...allSongs];
-  if (activeGenre !== 'all') {
+  const albumId = window._albumFilter;
+
+  if (albumId) {
+    const album = (window.ALBUMS_DATA || []).find(a => a.id === albumId);
+    if (album) {
+      songs = allSongs.filter(s => (album.songs || []).includes(s.id));
+      if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-compact-disc"></i> Album: ${album.name}`;
+    }
+  } else if (activeGenre !== 'all') {
     songs = songs.filter(s => s.genre === activeGenre);
     if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-fire"></i> Tất cả nhạc ${activeGenre.toUpperCase()}`;
   } else {

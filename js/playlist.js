@@ -3,20 +3,29 @@
  * Quản lý danh sách phát, tạo mới và thêm bài hát vào playlist.
  */
 
-let userPlaylists = JSON.parse(localStorage.getItem('userPlaylists')) || [];
+let userPlaylists = [];
 
-// Khởi tạo playlist mặc định
-if (userPlaylists.length === 0) {
-  userPlaylists = [
-    { id: 1, name: "Nhạc buổi sáng", songs: [], created: new Date().toISOString() },
-    { id: 2, name: "Chill đêm khuya", songs: [], created: new Date().toISOString() },
-    { id: 3, name: "V-Pop Hits", songs: [], created: new Date().toISOString() }
-  ];
-  localStorage.setItem('userPlaylists', JSON.stringify(userPlaylists));
+function loadUserPlaylists() {
+  const key = window.getStorageKey ? window.getStorageKey('userPlaylists') : 'userPlaylists_guest';
+  userPlaylists = JSON.parse(localStorage.getItem(key)) || [];
+
+  // Khởi tạo playlist mặc định nếu trống
+  if (userPlaylists.length === 0) {
+    userPlaylists = [
+      { id: 1, name: "Nhạc buổi sáng", songs: [], created: new Date().toISOString() },
+      { id: 2, name: "Chill đêm khuya", songs: [], created: new Date().toISOString() },
+      { id: 3, name: "V-Pop Hits", songs: [], created: new Date().toISOString() }
+    ];
+    localStorage.setItem(key, JSON.stringify(userPlaylists));
+  }
 }
 
+// Gọi lần đầu
+loadUserPlaylists();
+
 function savePlaylists() {
-  localStorage.setItem('userPlaylists', JSON.stringify(userPlaylists));
+  const key = window.getStorageKey ? window.getStorageKey('userPlaylists') : 'userPlaylists_guest';
+  localStorage.setItem(key, JSON.stringify(userPlaylists));
   // Thông báo cho các trang khác (như Library mobile) cập nhật lại UI
   window.dispatchEvent(new Event('playlistUpdated'));
 }
@@ -30,17 +39,23 @@ function buildSidebarPlaylists() {
     return;
   }
   
-  container.innerHTML = userPlaylists.map(playlist => `
-    <div class="playlist-item" data-playlist-id="${playlist.id}">
-      <div class="playlist-thumb" style="background:linear-gradient(135deg,#c084fc,#818cf8)">
-        <i class="fa-solid fa-list-ul"></i>
+  container.innerHTML = userPlaylists.map(playlist => {
+    const thumbContent = playlist.songs.length > 0 && playlist.songs[0].image 
+      ? `<img src="${playlist.songs[0].image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` 
+      : '<i class="fa-solid fa-list-ul"></i>';
+    
+    return `
+      <div class="playlist-item" data-playlist-id="${playlist.id}">
+        <div class="playlist-thumb" style="background:linear-gradient(135deg,#c084fc,#818cf8)">
+          ${thumbContent}
+        </div>
+        <div class="playlist-info">
+          <div class="playlist-name">${window.escapeHtml(playlist.name)}</div>
+          <div class="playlist-count">${playlist.songs.length} bài</div>
+        </div>
       </div>
-      <div class="playlist-info">
-        <div class="playlist-name">${window.escapeHtml(playlist.name)}</div>
-        <div class="playlist-count">${playlist.songs.length} bài</div>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
   
   document.querySelectorAll('.playlist-item').forEach(item => {
     item.addEventListener('click', (e) => {
@@ -229,3 +244,4 @@ window.showPlaylistDetail = showPlaylistDetail;
 window.showCreatePlaylistModal = showCreatePlaylistModal;
 window.closeCreatePlaylistModal = closeCreatePlaylistModal;
 window.confirmCreatePlaylist = confirmCreatePlaylist;
+window.loadUserPlaylists = loadUserPlaylists;
