@@ -197,8 +197,7 @@ function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
 
     window.soundcloudWidget.bind(SC.Widget.Events.FINISH, function() {
       if (window.repeatMode === 2) {
-        window.soundcloudWidget.seekTo(0);
-        window.soundcloudWidget.play();
+        window.playSongFromMain(window.currentSongObj);
       } else {
         playNextSong();
       }
@@ -331,18 +330,22 @@ function toggleShuffle() {
     }
   });
   window.showToast(window.shuffleMode ? 'Xáo trộn: Bật' : 'Xáo trộn: Tắt');
-}
+} 
 
 function cycleRepeat() {
   window.repeatMode = (window.repeatMode + 1) % 3;
   const btns = ['repeatCtrlBtn', 'npmRepeatBtn'];
-  const icons = ['fa-repeat', 'fa-repeat', 'fa-repeat-1'];
+  const iconHtml = [
+    '<i class="fa-solid fa-repeat"></i>', 
+    '<i class="fa-solid fa-repeat"></i>', 
+    '<i class="fa-solid fa-repeat"></i><sup style="font-size: 0.7em; margin-left: 2px; font-weight: bold;">1</sup>'
+  ];
   const msgs = ['Lặp lại: Tắt', 'Lặp lại: Tất cả', 'Lặp lại: 1 bài'];
   
   btns.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.innerHTML = `<i class="fa-solid ${icons[window.repeatMode]}"></i>`;
+      el.innerHTML = iconHtml[window.repeatMode];
       el.style.color = window.repeatMode > 0 ? 'var(--accent)' : '';
     }
   });

@@ -23,7 +23,7 @@ function checkLoginStatus() {
       </div>
     `;
   } else {
-    userSection.innerHTML = `<button class="login-btn" onclick="location.href='login.html'"><i class="fa-solid fa-key"></i> Đăng nhập</button>`;
+    userSection.innerHTML = `<button class="login-btn-header" onclick="location.href='login.html'"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</button>`;
   }
 }
 
@@ -415,3 +415,13 @@ window.closeGenreModal = closeGenreModal;
 window.openChangePwdModal = openChangePwdModal;
 window.closeChangePwdModal = closeChangePwdModal;
 window.renderHome = renderHome;
+window.setActiveNav = setActiveNav;
+
+window.goToHome = function() {
+  const homeBtn = document.querySelector('[data-tab="home"]');
+  if (homeBtn) {
+    homeBtn.click();
+  } else {
+    window.loadContent('home');
+  }
+};

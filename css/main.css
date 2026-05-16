@@ -24,22 +24,41 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 /* Nút đăng nhập trên header */
 .login-btn-header {
-  padding: 0.5rem 1.2rem;
-  background: linear-gradient(135deg, #c084fc, #818cf8);
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(135deg, #c084fc 0%, #818cf8 100%);
   border: none;
-  border-radius: 30px;
+  border-radius: 50px;
   color: #fff;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(192, 132, 252, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn-header i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
 }
 
 .login-btn-header:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(192,132,252,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(192, 132, 252, 0.4);
+  filter: brightness(1.1);
+}
+
+.login-btn-header:hover i {
+  transform: translateX(3px);
+}
+
+.login-btn-header:active {
+  transform: translateY(0);
 }
 
 /* User info khi đã đăng nhập */

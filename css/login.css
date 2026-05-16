@@ -144,22 +144,30 @@ body {
 
 .btn-login {
   width: 100%; 
-  padding: 0.9rem;
-  background: linear-gradient(135deg, #c084fc, #818cf8);
+  padding: 1rem;
+  background: linear-gradient(135deg, #c084fc 0%, #818cf8 100%);
   border: none; 
-  border-radius: 12px; 
+  border-radius: 50px; 
   color: #fff;
   font-family: 'Syne', sans-serif; 
   font-size: 1rem; 
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer; 
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(192, 132, 252, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-login:hover { 
-  opacity: 0.9; 
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(192,132,252,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(192, 132, 252, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-login:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(192, 132, 252, 0.3);
 }
 
 .login-footer { 
