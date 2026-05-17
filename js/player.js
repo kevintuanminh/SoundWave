@@ -1,9 +1,3 @@
-/**
- * Player Logic - SoundWave
- * Chứa logic phát nhạc, SoundCloud API, điều khiển và âm lượng.
- */
-
-// ========== BIẾN TOÀN CỤC PLAYER ==========
 window.currentSong = { name: "Chưa chọn bài hát", artist: "Mời bạn chọn nhạc", duration: 0 };
 window.currentTime = 0;
 window.isPlaying = false;
@@ -18,24 +12,22 @@ window.shuffleMode = false;
 window.repeatMode = 0; // 0=off, 1=repeat-one
 window.currentVolume = 80;
 
-// ========== CẬP NHẬT GIAO DIỆN PLAYER ==========
 function updatePlayerUI() {
   if (!window.currentSong) return;
   
   const percent = (window.currentTime / window.currentSong.duration) * 100 || 0;
   
-  // Progress Bars
-  const bars = ['progressFill', 'npmProgressFill'];
-  bars.forEach(id => { const el = document.getElementById(id); if (el) el.style.width = `${percent}%`; });
+  ['progressFill', 'npmProgressFill'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.width = `${percent}%`;
+  });
   
-  // Times
   const updateTime = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
   updateTime('currentTime', window.formatTime(window.currentTime));
   updateTime('npmCurrentTime', window.formatTime(window.currentTime));
   updateTime('totalTime', window.formatTime(window.currentSong.duration));
   updateTime('npmTotalTime', window.formatTime(window.currentSong.duration));
   
-  // Song Info
   const updateInfo = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val || ""; };
   updateInfo('npSongName', window.currentSong.name);
   updateInfo('npmName', window.currentSong.name);
@@ -44,10 +36,7 @@ function updatePlayerUI() {
   updateInfo('bpName', window.currentSong.name);
   updateInfo('bpArtist', window.currentSong.artist);
   
-  // Covers
-  const covers = ['npCover', 'bpThumb', 'npmCover'];
-  
-  covers.forEach(id => {
+  ['npCover', 'bpThumb', 'npmCover'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       if (window.currentSongObj && window.currentSongObj.image) {
@@ -58,7 +47,6 @@ function updatePlayerUI() {
       } else {
         el.innerHTML = '<i class="fa-solid fa-music"></i>';
       }
-      // Animation
       if (window.isPlaying) {
         el.classList.add('spinning');
         el.classList.remove('paused');
@@ -68,15 +56,12 @@ function updatePlayerUI() {
     }
   });
 
-  // Buttons
-  const playBtns = ['playPauseBtn', 'bpPlayPauseBtn', 'npmPlayPauseBtn'];
-  playBtns.forEach(id => {
+  ['playPauseBtn', 'bpPlayPauseBtn', 'npmPlayPauseBtn'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = window.isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
   });
 }
 
-// ========== KHỞI TẠO SỰ KIỆN NPM ==========
 function initNpm() {
   const modal = document.getElementById('nowPlayingModal');
   const bottomPlayer = document.getElementById('bottomPlayer');
@@ -91,7 +76,6 @@ function initNpm() {
   
   if (closeBtn) closeBtn.onclick = () => modal.classList.remove('show');
 
-  // Gắn sự kiện cho các nút trong modal
   const bind = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
   bind('npmPlayPauseBtn', () => window.togglePlayPause());
   bind('npmNextBtn', () => window.playNextSong());
@@ -99,7 +83,6 @@ function initNpm() {
   bind('npmShuffleBtn', () => window.toggleShuffle());
   bind('npmRepeatBtn', () => window.cycleRepeat());
 
-  // TUA NHẠC (SEEKING)
   const handleSeek = (barId, e) => {
     const bar = document.getElementById(barId);
     if (!bar || !window.currentSong || !window.soundcloudWidget) return;
@@ -121,10 +104,8 @@ function initNpm() {
   if (mainBar) mainBar.onclick = (e) => handleSeek('progressBar', e);
 }
 
-// Thêm initNpm vào window để gọi từ main.js
 window.initNpm = initNpm;
 
-// ========== HÀM CẬP NHẬT THỜI GIAN ==========
 function startTimeUpdate() {
   if (window.playerInterval) clearInterval(window.playerInterval);
   window.playerInterval = setInterval(function() {
@@ -146,17 +127,14 @@ function stopTimeUpdate() {
   }
 }
 
-// ========== KHỞI TẠO SOUNDCLOUD PLAYER ==========
 function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
   const playerDiv = document.getElementById('soundcloudPlayer');
   if (!playerDiv) return;
   
   if (!window.soundcloudWidget) {
-    // Chỉ tạo iframe 1 lần duy nhất
     const iframe = document.createElement('iframe');
     iframe.id = "sc-widget-iframe";
     iframe.width = "0"; iframe.height = "0"; iframe.style.display = "none";
-    // ✅ THÊM auto_play=true VÀO URL
     iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false`;
     iframe.setAttribute('allow', 'autoplay; encrypted-media');
     playerDiv.appendChild(iframe);
@@ -167,8 +145,6 @@ function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
     window.soundcloudWidget.bind(SC.Widget.Events.READY, function() {
       window.playerReady = true;
       window.soundcloudWidget.setVolume(window.currentVolume);
-      
-      // ✅ FORCE PLAY NGAY SAU KHI READY
       if (autoPlay) {
         window.soundcloudWidget.play();
         window.isPlaying = true;
@@ -180,8 +156,6 @@ function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
       window.isPlaying = true;
       updatePlayerUI();
       startTimeUpdate();
-      
-      // Fix iOS 1s stop: Kiểm tra sau 1s nếu bị dừng thì phát lại
       setTimeout(() => {
         window.soundcloudWidget.isPaused(function(paused) {
           if (paused && window.isPlaying) window.soundcloudWidget.play();
@@ -203,21 +177,17 @@ function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
       }
     });
   } else {
-    // ✅ SỬA: Gọi play() NGAY SAU load()
     window.soundcloudWidget.load(trackUrl, {
-      auto_play: true,  // ← BẮT BUỘC: true
+      auto_play: true,
       hide_related: true,
       show_comments: false,
       show_user: false,
       show_reposts: false,
       visual: false,
       callback: function() {
-        // ✅ FORCE PLAY trong callback
         window.soundcloudWidget.play();
         window.isPlaying = true;
         startTimeUpdate();
-        
-        // Cập nhật duration mới
         window.soundcloudWidget.getDuration(function(d) {
            if (d) {
              window.currentSong.duration = d / 1000;
@@ -229,14 +199,12 @@ function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
   }
 }
 
-// ========== ĐIỀU KHIỂN PHÁT NHẠC ==========
 function playSong(song) {
   if (!song.soundCloudUrl) {
     window.showToast('Bài hát này chưa có link phát!', 'error');
     return;
   }
   
-  // Mẹo cho iOS: Nếu đã có widget, gửi lệnh play ngay để "giữ chỗ"
   if (window.soundcloudWidget) {
     window.soundcloudWidget.play();
   }
@@ -273,7 +241,6 @@ function togglePlayPause() {
   });
 }
 
-// Giải pháp "Mồi" nhạc cho iOS
 document.addEventListener('touchstart', function() {
   if (window.soundcloudWidget && !window.playerUnlocked) {
     window.soundcloudWidget.play();
@@ -330,13 +297,13 @@ function toggleShuffle() {
     }
   });
   window.showToast(window.shuffleMode ? 'Xáo trộn: Bật' : 'Xáo trộn: Tắt');
-} 
+}
 
 function cycleRepeat() {
   window.repeatMode = (window.repeatMode === 1) ? 0 : 1;
   const btns = ['repeatCtrlBtn', 'npmRepeatBtn'];
   const iconHtml = [
-    '<i class="fa-solid fa-repeat"></i>', 
+    '<i class="fa-solid fa-repeat"></i>',
     '<i class="fa-solid fa-repeat"></i><sup style="font-size: 0.7em; margin-left: 2px; font-weight: bold;">1</sup>'
   ];
   const msgs = ['Lặp lại: Tắt', 'Lặp lại: Bật'];
@@ -382,7 +349,7 @@ function initKeyboard() {
     if (tag === 'INPUT' || tag === 'TEXTAREA') return;
     if (e.code === 'Space') { e.preventDefault(); togglePlayPause(); }
     if (e.code === 'ArrowRight') { e.preventDefault(); playNextSong(); }
-    if (e.code === 'ArrowLeft') { e.preventDefault(); playPreviousSong(); }
+    if (e.code === 'ArrowLeft') { e.preventDefault(); playPrevSong(); }
     if (e.code === 'KeyM') {
       window.currentVolume = window.currentVolume > 0 ? 0 : 80;
       const f = document.getElementById('volumeFill');
@@ -396,7 +363,6 @@ function initKeyboard() {
   });
 }
 
-// Export ra window
 window.playSongFromMain = playSong;
 window.togglePlayPause = togglePlayPause;
 window.playNextSong = playNextSong;

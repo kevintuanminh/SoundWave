@@ -1,15 +1,8 @@
-/**
- * UI & Core Logic - SoundWave
- * Chứa các hàm quản lý giao diện, thông báo, yêu thích và tìm kiếm.
- */
-
-// ========== HELPER LƯU TRỮ RIÊNG BIỆT ==========
 function getStorageKey(baseKey) {
   const username = localStorage.getItem('username') || 'guest';
   return `${baseKey}_${username}`;
 }
 
-// ========== KIỂM TRA ĐĂNG NHẬP ==========
 function checkLoginStatus() {
   const username = localStorage.getItem('username');
   const userSection = document.getElementById('userSection');
@@ -27,7 +20,6 @@ function checkLoginStatus() {
   }
 }
 
-// ========== HÀM TẢI NỘI DUNG ==========
 function loadContent(page) {
   const mainContent = document.getElementById('mainContent');
   if (!mainContent) return;
@@ -42,10 +34,8 @@ function loadContent(page) {
     .then(html => {
       mainContent.innerHTML = html;
       
-      // Khởi tạo logic đặc thù cho từng trang
       if (page === 'home') renderHome();
 
-      // Thực thi script trong trang (nếu có)
       const scriptTags = mainContent.querySelectorAll('script');
       scriptTags.forEach(script => {
         const newScript = document.createElement('script');
@@ -59,7 +49,6 @@ function loadContent(page) {
     });
 }
 
-// ========== RENDER TRANG CHỦ ==========
 function renderHome(genre = null) {
   const allSongs = window.SONGS_DATA || [];
   const el = document.getElementById('topSongsList');
@@ -83,12 +72,10 @@ function renderHome(genre = null) {
 
   if (heroDesc) heroDesc.innerHTML = `<i class="fa-solid fa-music"></i> Khám phá ngay ${songs.length} bài hát đang dẫn đầu bảng xếp hạng trên SoundWave.`;
 
-  // Gắn sự kiện cho các nút ở Banner
   const playBtn = document.getElementById('heroPlayBtn');
   const shuffleBtn = document.getElementById('heroShuffleBtn');
   const seeAllBtn = document.getElementById('seeAllBtn');
 
-  // Thể loại cho Mobile
   document.querySelectorAll('.mobile-genres-row .genre-tag').forEach(tag => {
     const g = tag.dataset.genre;
     if (g === 'all' || tag.id === 'mobileMoreGenreBtn') {
@@ -147,7 +134,6 @@ function renderHome(genre = null) {
     </div>`;
   }).join('');
 
-  // Gắn sự kiện cho danh sách nhạc
   el.querySelectorAll('.song-item').forEach(item => {
     item.addEventListener('click', e => {
       if (e.target.classList.contains('add-to-playlist-btn') || e.target.classList.contains('like-song-btn')) return;
@@ -171,7 +157,6 @@ function renderHome(genre = null) {
     });
   });
 
-  // Render Lịch sử
   const histList = document.getElementById('historyList');
   if (histList) {
     const hist = JSON.parse(localStorage.getItem('listenHistory')) || [];
@@ -182,7 +167,6 @@ function renderHome(genre = null) {
       </div>`).join('');
   }
 
-  // Render Album
   const albumGrid = document.getElementById('albumGrid');
   if (albumGrid) {
     const albums = window.ALBUMS_DATA || [];
@@ -202,7 +186,6 @@ function renderHome(genre = null) {
   }
 }
 
-// ========== TOAST NOTIFICATION ==========
 function showToast(msg, type = 'success') {
   const existing = document.querySelector('.sw-toast');
   if (existing) existing.remove();
@@ -214,7 +197,6 @@ function showToast(msg, type = 'success') {
   setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2800);
 }
 
-// ========== LỊCH SỬ NGHE ==========
 function saveHistory(song) {
   const key = getStorageKey('listenHistory');
   let hist = JSON.parse(localStorage.getItem(key)) || [];
@@ -224,7 +206,6 @@ function saveHistory(song) {
   localStorage.setItem(key, JSON.stringify(hist));
 }
 
-// ========== LIKE / UNLIKE ==========
 function toggleLike(song) {
   const key = getStorageKey('favorites');
   const favorites = JSON.parse(localStorage.getItem(key) || '[]');
@@ -251,8 +232,7 @@ function updateLikeBtn() {
   const iconClass = isLikedSong ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
   const color = isLikedSong ? 'var(--accent)' : 'white';
   
-  const ids = ['likeCurrentBtn', 'npmLikeBtn'];
-  ids.forEach(id => {
+  ['likeCurrentBtn', 'npmLikeBtn'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.innerHTML = `<i class="${iconClass}"></i>`;
@@ -261,7 +241,6 @@ function updateLikeBtn() {
   });
 }
 
-// ========== SEARCH ==========
 function handleSearch(query) {
   if (!query.trim()) { loadContent('home'); return; }
   const songs = (window.SONGS_DATA || []).filter(s =>
@@ -281,14 +260,12 @@ function handleSearch(query) {
       <div class="song-rank">#${i + 1}</div>
       <div class="song-thumb" style="background:${s.bg}">${s.image?`<img src="${s.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`:'<i class="fa-solid fa-music"></i>'}<div class="song-play-overlay"><i class="fa-solid fa-play"></i></div></div>
       <div class="song-info"><div class="song-name">${s.name}</div><div class="song-artist">${s.artist}</div></div>
-      <div class="song-meta"><span class="song-plays">${s.plays}</span><span class="song-duration">${s.dur}</span></div>
     </div>`).join('');
   el.querySelectorAll('.song-item').forEach(item => {
     item.addEventListener('click', () => { window.playSongFromMain(JSON.parse(item.dataset.song)); });
   });
 }
 
-// ========== THỂ LOẠI MỞ RỘNG ==========
 const ALL_GENRES = [
   { id: 'all', name: 'Tất cả', icon: 'fa-house' },
   { id: 'vpop', name: 'V-Pop', icon: 'fa-microphone' },
@@ -345,7 +322,6 @@ function openChangePwdModal() {
   if (!modal) return;
   modal.classList.add('show');
   document.getElementById('modalOverlay')?.classList.add('show');
-  // Reset inputs
   document.getElementById('oldPwdInput').value = '';
   document.getElementById('newPwdInput').value = '';
   document.getElementById('confirmPwdInput').value = '';
@@ -356,7 +332,6 @@ function closeChangePwdModal() {
   document.getElementById('modalOverlay')?.classList.remove('show');
 }
 
-// ========== HÀM PHỤ TRỢ ==========
 function formatTime(seconds) {
   if (!seconds || isNaN(seconds)) return '0:00';
   const mins = Math.floor(seconds / 60);
@@ -388,7 +363,7 @@ function initMenu() {
       const tab = btn.dataset.tab;
       if (tab === 'home' || tab === 'trending') {
         window._genreFilter = 'all';
-        window._albumFilter = null; // Reset album filter
+        window._albumFilter = null;
         document.querySelectorAll('.genre-tag').forEach(t => t.classList.remove('active'));
       }
       loadContent(tab);
@@ -397,7 +372,6 @@ function initMenu() {
   });
 }
 
-// Export ra window
 window.checkLoginStatus = checkLoginStatus;
 window.loadContent = loadContent;
 window.showToast = showToast;

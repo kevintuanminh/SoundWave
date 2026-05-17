@@ -1,15 +1,9 @@
-/**
- * Playlist Manager - SoundWave
- * Quản lý danh sách phát, tạo mới và thêm bài hát vào playlist.
- */
-
 let userPlaylists = [];
 
 function loadUserPlaylists() {
   const key = window.getStorageKey ? window.getStorageKey('userPlaylists') : 'userPlaylists_guest';
   userPlaylists = JSON.parse(localStorage.getItem(key)) || [];
 
-  // Khởi tạo playlist mặc định nếu trống
   if (userPlaylists.length === 0) {
     userPlaylists = [
       { id: 1, name: "Nhạc buổi sáng", songs: [], created: new Date().toISOString() },
@@ -20,13 +14,11 @@ function loadUserPlaylists() {
   }
 }
 
-// Gọi lần đầu
 loadUserPlaylists();
 
 function savePlaylists() {
   const key = window.getStorageKey ? window.getStorageKey('userPlaylists') : 'userPlaylists_guest';
   localStorage.setItem(key, JSON.stringify(userPlaylists));
-  // Thông báo cho các trang khác (như Library mobile) cập nhật lại UI
   window.dispatchEvent(new Event('playlistUpdated'));
 }
 
@@ -213,7 +205,6 @@ function confirmCreatePlaylist() {
   }
 }
 
-// Khởi tạo các sự kiện tĩnh
 function initPlaylistEvents() {
   document.getElementById('closePlaylistManager')?.addEventListener('click', () => {
     document.getElementById('playlistManager')?.classList.remove('show');
@@ -236,7 +227,6 @@ function initPlaylistEvents() {
   document.getElementById('confirmCreatePlaylist')?.addEventListener('click', confirmCreatePlaylist);
 }
 
-// Export ra window
 window.buildSidebarPlaylists = buildSidebarPlaylists;
 window.showAddToPlaylistModal = showAddToPlaylistModal;
 window.initPlaylistEvents = initPlaylistEvents;

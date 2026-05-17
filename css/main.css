@@ -22,7 +22,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .app { display: none; height: 100vh; flex-direction: column; overflow: hidden; }
 .app.active { display: flex; }
 
-/* Nút đăng nhập trên header */
 .login-btn-header {
   padding: 0.6rem 1.4rem;
   background: linear-gradient(135deg, #c084fc 0%, #818cf8 100%);
@@ -61,7 +60,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   transform: translateY(0);
 }
 
-/* User info khi đã đăng nhập */
 .user-info-header {
   display: flex;
   align-items: center;
@@ -202,40 +200,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   position: relative; overflow: hidden; margin-bottom: 2rem;
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
 }
-/* .hero-banner::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(192,132,252,0.2) 0%, transparent 60%), radial radial-gradient(ellipse 40% 60% at 20% 80%, rgba(52,211,153,0.1) 0%, transparent 50%);
-}
-.hero-text { position: relative; z-index: 1; }
-.hero-tag {
-  display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;
-  background: rgba(192,132,252,0.2); color: var(--accent);
-  font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.75rem; border: 1px solid rgba(192,132,252,0.3);
-}
-.hero-text h2 { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 800; margin-bottom: 0.5rem; }
-.hero-text p { color: var(--text2); font-size: 0.9rem; max-width: 350px; line-height: 1.6; }
-.hero-btns { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
-.btn-primary {
-  padding: 0.6rem 1.25rem; border-radius: 30px; border: none; cursor: pointer;
-  background: linear-gradient(135deg, #c084fc, #818cf8);
-  color: #fff; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-.btn-ghost {
-  padding: 0.6rem 1.25rem; border-radius: 30px;
-  border: 1px solid var(--border2); background: transparent;
-  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer;
-  transition: background 0.2s;
-}
-.btn-ghost:hover { background: var(--surface); }
-.hero-visual { position: relative; z-index: 1; flex-shrink: 0; }
-.hero-album-stack { position: relative; width: 130px; height: 110px; }
-.ha {
-  width: 90px; height: 90px; border-radius: 10px; position: absolute;
-  display: flex; align-items: center; justify-content: center; font-size: 2rem;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-} */
 .ha:nth-child(1) { background: linear-gradient(135deg, #1a0a3e, #2a1a4e); left: 40px; top: 0px; transform: rotate(8deg); }
 .ha:nth-child(2) { background: linear-gradient(135deg, #0a1a2e, #1a2a3e); left: 15px; top: 10px; transform: rotate(-3deg); }
 .ha:nth-child(3) { background: linear-gradient(135deg, #0a2e1a, #1a3e2a); left: 0px; top: 20px; transform: rotate(-12deg); }
@@ -428,7 +392,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   background: var(--bg2);
   border-radius: 20px;
   border: 1px solid var(--border);
-  z-index: 1000;
+  z-index: 4000;
   display: none;
   flex-direction: column;
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
@@ -548,7 +512,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   background: var(--bg2);
   border-radius: 20px;
   border: 1px solid var(--border);
-  z-index: 1001;
+  z-index: 4000;
   display: none;
 }
 
@@ -708,7 +672,6 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
   background: rgba(239, 68, 68, 0.3);
 }
 
-/* Playlist Detail Modal - thêm vào cuối file */
 .playlist-detail-modal {
   position: fixed;
   top: 0;

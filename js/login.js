@@ -1,11 +1,5 @@
-/**
- * Login & Register Logic - SoundWave
- */
-
-// Lấy dữ liệu users từ localStorage
 let users = JSON.parse(localStorage.getItem('users')) || [];
 
-// Tài khoản mặc định nếu chưa có
 if (users.length === 0) {
   users.push({
     username: "demo",
@@ -16,7 +10,6 @@ if (users.length === 0) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // --- XỬ LÝ ĐĂNG KÝ ---
   const registerBtn = document.getElementById('registerBtn');
   if (registerBtn) {
     registerBtn.addEventListener('click', () => {
@@ -62,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- XỬ LÝ ĐĂNG NHẬP ---
   const loginBtn = document.getElementById('loginBtn');
   if (loginBtn) {
     loginBtn.addEventListener('click', () => {
@@ -85,10 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Lưu trạng thái đăng nhập
       localStorage.setItem('username', user.username);
 
-      // Chuyển sang trang chủ với hiệu ứng
       const page = document.getElementById('loginPage');
       if (page) page.classList.add('fade-out');
       
@@ -98,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- QUÊN MẬT KHẨU ---
   const forgotBtn = document.getElementById('forgotBtn');
   const forgotModal = document.getElementById('forgotModal');
   const closeModalBtn = document.getElementById('closeModalBtn');
@@ -140,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Hỗ trợ phím Enter
   document.querySelectorAll('input').forEach(input => {
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {

@@ -1,30 +1,16 @@
-/**
- * Main Entry Point - SoundWave
- * Khởi tạo ứng dụng và gắn các sự kiện chính.
- */
-
 function init() {
-  // 1. Kiểm tra trạng thái người dùng
   window.checkLoginStatus();
   
-  // Khởi tạo menu điều hướng
   if (window.initMenu) window.initMenu();
-  
-  // Khởi tạo giao diện Đang phát Mobile
   if (window.initNpm) window.initNpm();
   
-  // Load nội dung mặc định (Trang chủ)
   window.loadContent('home');
-  
-  // 4. Khởi tạo các điều khiển player
   window.initVolumeControl();
   window.initKeyboard();
   
-  // 5. Khởi tạo danh sách phát
   window.buildSidebarPlaylists();
   window.initPlaylistEvents();
 
-  // 6. Gắn các sự kiện DOM chính
   document.getElementById('playPauseBtn')?.addEventListener('click', window.togglePlayPause);
   document.getElementById('bpPlayPauseBtn')?.addEventListener('click', window.togglePlayPause);
   document.getElementById('nextBtn')?.addEventListener('click', window.playNextSong);
@@ -34,13 +20,11 @@ function init() {
   document.getElementById('shuffleCtrlBtn')?.addEventListener('click', window.toggleShuffle);
   document.getElementById('repeatCtrlBtn')?.addEventListener('click', window.cycleRepeat);
 
-  // Nút Like trong bảng điều khiển phải
   const likeBtn = document.getElementById('likeCurrentBtn');
   if (likeBtn) likeBtn.addEventListener('click', () => { 
     if (window.currentSongObj) window.toggleLike(window.currentSongObj); 
   });
 
-  // Nút Thêm vào playlist trong bảng điều khiển phải
   const addNpBtn = document.getElementById('addToPlaylistNpBtn');
   if (addNpBtn) addNpBtn.addEventListener('click', () => {
     if (window.currentSongObj && window.showAddToPlaylistModal) {
@@ -48,7 +32,6 @@ function init() {
     }
   });
 
-  // Nút Like và Add trong Mobile Now Playing
   document.getElementById('npmLikeBtn')?.addEventListener('click', () => {
     if (window.currentSongObj) window.toggleLike(window.currentSongObj);
   });
@@ -58,7 +41,6 @@ function init() {
     }
   });
 
-  // Thanh tiến trình
   const progressBar = document.getElementById('progressBar');
   if (progressBar) {
     progressBar.addEventListener('click', e => {
@@ -67,11 +49,9 @@ function init() {
     });
   }
 
-  // Tìm kiếm
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
     searchInput.addEventListener('input', e => {
-      // Logic debounce search
       if (window._searchTimer) clearTimeout(window._searchTimer);
       window._searchTimer = setTimeout(() => window.handleSearch(e.target.value), 350);
     });
@@ -83,7 +63,6 @@ function init() {
     });
   }
 
-  // Bộ lọc thể loại
   document.querySelectorAll('.genre-tag').forEach(tag => {
     tag.addEventListener('click', () => {
       document.querySelectorAll('.genre-tag').forEach(t => t.classList.remove('active'));
@@ -93,12 +72,10 @@ function init() {
     });
   });
 
-  // Nút mở rộng thể loại
   document.getElementById('moreGenreBtn')?.addEventListener('click', window.openGenreModal);
   document.getElementById('closeGenreModal')?.addEventListener('click', window.closeGenreModal);
   document.getElementById('closeChangePwdModal')?.addEventListener('click', window.closeChangePwdModal);
 
-  // Xử lý đổi mật khẩu từ Modal
   document.getElementById('confirmChangePwdBtn')?.addEventListener('click', () => {
     const oldPwd = document.getElementById('oldPwdInput')?.value;
     const newPwd = document.getElementById('newPwdInput')?.value;
@@ -144,12 +121,9 @@ function init() {
     if(window.closeChangePwdModal) window.closeChangePwdModal();
   });
 
-  // Luôn cập nhật UI player khi bắt đầu
   window.updatePlayerUI();
 }
 
-// Khởi chạy khi DOM sẵn sàng
 document.addEventListener('DOMContentLoaded', init);
 
-// Cung cấp một số hàm cho các file script khác (nếu cần)
 window.updateTrendingSongs = (songs) => { window.trendingSongs = songs; };

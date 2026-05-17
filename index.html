@@ -17,12 +17,7 @@
 
   <!-- MAIN APP -->
   <div class="app active" id="appPage">
-    <!-- YouTube Player ẩn - để phát nhạc -->
-    <!-- YouTube Player dạng iframe -->
-    <!-- <iframe id="youtubePlayer" width="0" height="0" src="https://www.youtube.com/embed/knW7-x7Y7RE?enablejsapi=1&autoplay=0" style="display: none; visibility: hidden;" allow="autoplay"></iframe> -->
-    <!-- SoundCloud Player ẩn -->
     <div id="soundcloudPlayer" style="display: none;"></div>
-    <!-- TOPBAR MỚI -->
     <div class="topbar">
       <div class="topbar-logo" onclick="goToHome()">
         <div class="topbar-logo-icon"><i class="fa-solid fa-music"></i></div>
@@ -35,9 +30,6 @@
       </div>
 
       <div class="topbar-right">
-        <!-- <div class="notif-btn">🔔<div class="notif-dot"></div></div> -->
-
-        <!-- Phần user - thay đổi theo trạng thái đăng nhập -->
         <div id="userSection"></div>
       </div>
     </div>
@@ -87,9 +79,7 @@
         </div>
       </div>
 
-      <!-- MAIN CONTENT -->
       <div class="content" id="mainContent">
-        <!-- Nội dung sẽ được tải từ file pages/ khi nhấn menu -->
         <div class="loading">Đang tải...</div>
       </div>
 
@@ -135,12 +125,6 @@
           <span class="vol-icon"><i class="fa-solid fa-volume-high"></i></span>
         </div>
 
-        <div class="queue-section">
-          <div class="queue-label">Tiếp theo</div>
-          <div id="queueList"></div>
-        </div>
-      </div>
-
     </div>
 
     <!-- BOTTOM PLAYER (mobile) -->
@@ -178,9 +162,7 @@
       <h3><i class="fa-solid fa-plus-square"></i> Thêm vào playlist</h3>
       <span class="playlist-manager-close" id="closePlaylistManager"><i class="fa-solid fa-xmark"></i></span>
     </div>
-    <div class="playlist-manager-body" id="playlistListContainer">
-      <!-- Danh sách playlist sẽ hiển thị ở đây -->
-    </div>
+    <div class="playlist-manager-body" id="playlistListContainer"></div>
     <div style="padding: 0 1rem 1rem 1rem;">
       <button class="create-new-playlist-btn" id="createNewPlaylistFromModal"><i class="fa-solid fa-plus"></i> Tạo playlist mới</button>
     </div>
@@ -203,7 +185,7 @@
     <div class="npm-header">
       <button class="npm-close" id="closeNpmBtn"><i class="fa-solid fa-chevron-down"></i></button>
       <div class="npm-header-title">Đang phát</div>
-      <button class="npm-more"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+      <button class="npm-more" style="visibility: hidden;"><i class="fa-solid fa-ellipsis-vertical"></i></button>
     </div>
     
     <div class="npm-content">
@@ -247,9 +229,7 @@
       <h3><i class="fa-solid fa-layer-group"></i> Khám phá thể loại</h3>
       <span class="playlist-manager-close" id="closeGenreModal"><i class="fa-solid fa-xmark"></i></span>
     </div>
-    <div class="genre-modal-grid" id="genreGrid">
-      <!-- Tất cả thể loại sẽ được liệt kê ở đây -->
-    </div>
+    <div class="genre-modal-grid" id="genreGrid"></div>
   </div>
 
   <!-- Modal đổi mật khẩu -->
