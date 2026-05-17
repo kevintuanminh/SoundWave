@@ -15,7 +15,7 @@ window.playerInterval = null;
 window.soundcloudWidget = null;
 window.soundcloudIframe = null;
 window.shuffleMode = false;
-window.repeatMode = 0; // 0=off, 1=all, 2=one
+window.repeatMode = 0; // 0=off, 1=repeat-one
 window.currentVolume = 80;
 
 // ========== CẬP NHẬT GIAO DIỆN PLAYER ==========
@@ -196,7 +196,7 @@ function initSoundCloudPlayer(trackUrl, song, autoPlay = true) {
     });
 
     window.soundcloudWidget.bind(SC.Widget.Events.FINISH, function() {
-      if (window.repeatMode === 2) {
+      if (window.repeatMode === 1) {
         window.playSongFromMain(window.currentSongObj);
       } else {
         playNextSong();
@@ -333,14 +333,13 @@ function toggleShuffle() {
 } 
 
 function cycleRepeat() {
-  window.repeatMode = (window.repeatMode + 1) % 3;
+  window.repeatMode = (window.repeatMode === 1) ? 0 : 1;
   const btns = ['repeatCtrlBtn', 'npmRepeatBtn'];
   const iconHtml = [
     '<i class="fa-solid fa-repeat"></i>', 
-    '<i class="fa-solid fa-repeat"></i>', 
     '<i class="fa-solid fa-repeat"></i><sup style="font-size: 0.7em; margin-left: 2px; font-weight: bold;">1</sup>'
   ];
-  const msgs = ['Lặp lại: Tắt', 'Lặp lại: Tất cả', 'Lặp lại: 1 bài'];
+  const msgs = ['Lặp lại: Tắt', 'Lặp lại: Bật'];
   
   btns.forEach(id => {
     const el = document.getElementById(id);
