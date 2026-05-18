@@ -741,9 +741,9 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 }
 .mobile-nav-item {
   display: flex; flex-direction: column; align-items: center;
-  font-size: 1.2rem; color: var(--text3); cursor: pointer; gap: 4px;
+  font-size: 1.05rem; color: var(--text3); cursor: pointer; gap: 3px; flex: 1;
 }
-.mobile-nav-item span { font-size: 0.65rem; font-weight: 500; }
+.mobile-nav-item span { font-size: 0.58rem; font-weight: 500; }
 .mobile-nav-item.active { color: var(--accent); }
 
 /* RESPONSIVE */
